@@ -10,7 +10,9 @@ import UIKit
 import Photos
 
 /// Image Picker Root View Controller contains the logic for selecting images. The images are displayed in a `UICollectionView`, and multiple images can be selected.
-open class OpalImagePickerRootViewController: UIViewController {
+open class OpalImagePickerRootViewController: UIViewController,MenuDelegate {
+
+    
     
     /// Delegate for Image Picker. Notifies when images are selected (done is tapped) or when the Image Picker is cancelled.
     open weak var delegate: OpalImagePickerControllerDelegate?
@@ -121,7 +123,7 @@ open class OpalImagePickerRootViewController: UIViewController {
     private var savedImages: [UIImage] = []
     private var imagesDict: [IndexPath: UIImage] = [:]
     private var showExternalImages = false
-    private var selectedIndexPaths: [IndexPath] = []
+    var selectedIndexPaths: [IndexPath] = []
     private var externalSelectedIndexPaths: [IndexPath] = []
     
     private lazy var cache: NSCache<NSIndexPath, NSData> = {
@@ -130,6 +132,13 @@ open class OpalImagePickerRootViewController: UIViewController {
         cache.countLimit = 100 // 100 images
         return cache
     }()
+    
+    private var selectedCollection : PHAssetCollection!
+    public var shouldSelectAlbumes:Bool = false
+    var menu : Menu!
+    private var titleView:UILabel!
+    private var items:[menuItem]!
+    private var albumModel:[AlbumModel]!
     
     fileprivate weak var rightExternalCollectionViewConstraint: NSLayoutConstraint?
     
@@ -221,7 +230,13 @@ open class OpalImagePickerRootViewController: UIViewController {
         if #available(iOS 9.0, *) {
             fetchOptions.fetchLimit = pageSize
         }
-        photoAssets = PHAsset.fetchAssets(with: fetchOptions)
+        if selectedCollection == nil {
+            photoAssets = PHAsset.fetchAssets(with: fetchOptions)
+        }
+        else {
+            photoAssets = PHAsset.fetchAssets(in: selectedCollection as! PHAssetCollection, options: fetchOptions)
+
+        }
         collectionView?.reloadData()
     }
     
@@ -256,7 +271,40 @@ open class OpalImagePickerRootViewController: UIViewController {
         super.viewDidLoad()
         setup()
         
-        navigationItem.title = configuration?.navigationTitle ?? NSLocalizedString("Photos", comment: "")
+        albumModel = [AlbumModel]()
+        let userCollections = PHCollectionList.fetchTopLevelUserCollections(with: nil)
+        
+        albumModel.append(AlbumModel(colection: nil, index: nil))
+        userCollections.enumerateObjects { (collection, id, pointer) in
+            self.albumModel.append(AlbumModel(colection: collection, index: id))
+        }
+        
+        items = [menuItem]()
+        for i in albumModel {
+            if i.colection == nil {
+                let images = PHAsset.fetchAssets(with: fetchOptions)
+                items.append(menuItem(title: "Recents", image: self.loadPhotoAsset(asset: images.firstObject!), description: "\(images.count)", id: i.index))
+            }
+            else {
+                let images = PHAsset.fetchAssets(in: i.colection as! PHAssetCollection, options: fetchOptions)
+                
+                items.append(menuItem(title: i.colection!.localizedTitle, image: self.loadPhotoAsset(asset: images.firstObject), description: "\(images.count)", id: i.index))
+            }
+
+        }
+        menu = Menu(viewController: self,items:items)
+        menu.delegate = self
+        titleView = UILabel()
+        titleView.text = configuration?.navigationTitle ?? NSLocalizedString("Recents", comment: "")
+        titleView.textAlignment = .center
+        titleView.frame = CGRect(origin:CGPoint.zero, size:CGSize(width: 500, height: 500))
+        self.navigationItem.titleView = titleView
+        
+        let recognizer = UITapGestureRecognizer(target: self, action: #selector(titleTapped))
+        titleView.isUserInteractionEnabled = true
+        titleView.addGestureRecognizer(recognizer)
+        
+//        navigationItem.title = configuration?.navigationTitle ?? NSLocalizedString("Photos", comment: "")
         
         let cancelButtonTitle = configuration?.cancelButtonTitle ?? NSLocalizedString("Cancel", comment: "")
         let cancelButton = UIBarButtonItem(title: cancelButtonTitle, style: .plain, target: self, action: #selector(cancelTapped))
@@ -268,7 +316,32 @@ open class OpalImagePickerRootViewController: UIViewController {
         navigationItem.rightBarButtonItem = doneButton
         self.doneButton = doneButton
     }
-    
+    private func loadPhotoAsset(asset:PHAsset?)->UIImage? {
+        let options = PHImageRequestOptions()
+        options.deliveryMode = .highQualityFormat
+        options.resizeMode = .fast
+        options.isSynchronous = false
+        options.isNetworkAccessAllowed = true
+        
+        
+        let manager = PHImageManager.default()
+        var _image: UIImage?
+        if asset != nil {
+            manager.requestImage(for: asset!, targetSize: CGSize(width: 200, height: 200), contentMode: .aspectFill, options: nil, resultHandler: { image, _ in
+                _image = image
+            })
+        }
+        return _image
+    }
+    func didSelectItem(index: Int, title: String) {
+        titleView.text = title
+        selectedCollection = albumModel[index].colection as? PHAssetCollection
+        fetchPhotos()
+        menu.show()
+    }
+    @objc func titleTapped(){
+        menu.show()
+    }
     @objc func cancelTapped() {
         dismiss(animated: true) { [weak self] in
             guard let imagePicker = self?.navigationController as? OpalImagePickerController else { return }
@@ -317,6 +390,7 @@ open class OpalImagePickerRootViewController: UIViewController {
         }
         delegate?.imagePicker?(imagePicker, didFinishPickingImages: savedImages)
         savedImages = []
+        dismiss(animated: true, completion: nil)
     }
     
     private func shouldExpandImagesFromAssets() -> Bool {
@@ -330,7 +404,7 @@ open class OpalImagePickerRootViewController: UIViewController {
         return false
     }
     
-    private func set(image: UIImage?, indexPath: IndexPath, isExternal: Bool) {
+    func set(image: UIImage?, indexPath: IndexPath, isExternal: Bool) {
         update(isSelected: image != nil, isExternal: isExternal, for: indexPath)
         
         // Only store images if delegate method is implemented
@@ -367,7 +441,6 @@ open class OpalImagePickerRootViewController: UIViewController {
         let oldFetchLimit = fetchLimit
         fetchLimit += pageSize
         photoAssets = PHAsset.fetchAssets(with: fetchOptions)
-        
         var indexPaths: [IndexPath] = []
         for item in oldFetchLimit..<photoAssets.count {
             indexPaths += [IndexPath(item: item, section: 0)]
@@ -430,6 +503,7 @@ extension OpalImagePickerRootViewController: UICollectionViewDelegate {
             let image = cell.imageView.image else { return }
         set(image: image, indexPath: indexPath, isExternal: collectionView == self.externalCollectionView)
         doneTapped()
+        
     }
     
     /// Collection View did de-select item at `IndexPath`
@@ -516,7 +590,6 @@ extension OpalImagePickerRootViewController: UICollectionViewDataSource {
         
         return cell
     }
-    
     private func externalCollectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let imagePicker = navigationController as? OpalImagePickerController,
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImagePickerCollectionViewCell.reuseId, for: indexPath) as? ImagePickerCollectionViewCell else { return UICollectionViewCell() }

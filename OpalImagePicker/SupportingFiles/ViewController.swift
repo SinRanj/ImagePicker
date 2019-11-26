@@ -20,16 +20,14 @@ class ViewController: UIViewController,OpalImagePickerControllerDelegate {
         pickerView.selectionImage = UIImage(named: "checkmark2")
         pickerView.allowedMediaTypes = Set([PHAssetMediaType.image])
         
+        
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    func imagePicker(_ picker: OpalImagePickerController, didPickImages images: [UIImage]) {
-        print("")
-    }
     func imagePicker(_ picker: OpalImagePickerController, didFinishPickingImages images: [UIImage]) {
-        print("")
+        
     }
 }

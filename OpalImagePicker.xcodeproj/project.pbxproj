@@ -24,6 +24,10 @@
 		01DD8B661E2B5E6C0081B1FC /* OpalImagePickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DD8B651E2B5E6C0081B1FC /* OpalImagePickerController.swift */; };
 		01DD8B681E2B5EA20081B1FC /* ImagePickerCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DD8B671E2B5EA20081B1FC /* ImagePickerCollectionViewCell.swift */; };
 		01DD8B6A1E2B5EDB0081B1FC /* OpalImagePickerCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DD8B691E2B5EDB0081B1FC /* OpalImagePickerCollectionViewLayout.swift */; };
+		27147641238D1AF800F3E3E3 /* MenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27147640238D1AF800F3E3E3 /* MenuController.swift */; };
+		27147644238D1B8D00F3E3E3 /* MenuCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 27147643238D1B8D00F3E3E3 /* MenuCell.xib */; };
+		27147646238D1C7D00F3E3E3 /* MenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27147645238D1C7D00F3E3E3 /* MenuCell.swift */; };
+		27147648238D1FB100F3E3E3 /* AlbumModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27147647238D1FB100F3E3E3 /* AlbumModel.swift */; };
 		279D0C10238BF3D100DE3A61 /* OpalImageViewPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 279D0C0F238BF3D100DE3A61 /* OpalImageViewPicker.swift */; };
 		279D0C12238C0A3800DE3A61 /* UIViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 279D0C11238C0A3800DE3A61 /* UIViewExtensions.swift */; };
 /* End PBXBuildFile section */
@@ -60,6 +64,10 @@
 		01DD8B651E2B5E6C0081B1FC /* OpalImagePickerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpalImagePickerController.swift; sourceTree = "<group>"; };
 		01DD8B671E2B5EA20081B1FC /* ImagePickerCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePickerCollectionViewCell.swift; sourceTree = "<group>"; };
 		01DD8B691E2B5EDB0081B1FC /* OpalImagePickerCollectionViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpalImagePickerCollectionViewLayout.swift; sourceTree = "<group>"; };
+		27147640238D1AF800F3E3E3 /* MenuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuController.swift; sourceTree = "<group>"; };
+		27147643238D1B8D00F3E3E3 /* MenuCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MenuCell.xib; sourceTree = "<group>"; };
+		27147645238D1C7D00F3E3E3 /* MenuCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuCell.swift; sourceTree = "<group>"; };
+		27147647238D1FB100F3E3E3 /* AlbumModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumModel.swift; sourceTree = "<group>"; };
 		279D0C0F238BF3D100DE3A61 /* OpalImageViewPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpalImageViewPicker.swift; sourceTree = "<group>"; };
 		279D0C11238C0A3800DE3A61 /* UIViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -123,6 +131,7 @@
 		01DD8B531E2B5CC50081B1FC /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				27147642238D1B7C00F3E3E3 /* View */,
 				01DD8B631E2B5E2F0081B1FC /* UIViewController+OpalImagePicker.swift */,
 				01AE6CB21F3BBC9500222A6A /* OpalImagePickerConfiguration.swift */,
 				01DD8B651E2B5E6C0081B1FC /* OpalImagePickerController.swift */,
@@ -134,6 +143,8 @@
 				010B06522013B5E6002811B6 /* TimeInterval+String.swift */,
 				279D0C0F238BF3D100DE3A61 /* OpalImageViewPicker.swift */,
 				279D0C11238C0A3800DE3A61 /* UIViewExtensions.swift */,
+				27147640238D1AF800F3E3E3 /* MenuController.swift */,
+				27147647238D1FB100F3E3E3 /* AlbumModel.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -149,6 +160,15 @@
 				01DD8B571E2B5DED0081B1FC /* ViewController.swift */,
 			);
 			path = SupportingFiles;
+			sourceTree = "<group>";
+		};
+		27147642238D1B7C00F3E3E3 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				27147643238D1B8D00F3E3E3 /* MenuCell.xib */,
+				27147645238D1C7D00F3E3E3 /* MenuCell.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -240,6 +260,7 @@
 			files = (
 				01DD8B621E2B5E010081B1FC /* Main.storyboard in Resources */,
 				01DD8B611E2B5E010081B1FC /* LaunchScreen.storyboard in Resources */,
+				27147644238D1B8D00F3E3E3 /* MenuCell.xib in Resources */,
 				01DD8B5C1E2B5DF50081B1FC /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -282,9 +303,12 @@
 				279D0C10238BF3D100DE3A61 /* OpalImageViewPicker.swift in Sources */,
 				01B2D5F31F805D89005D2473 /* UIView+Helper.swift in Sources */,
 				010B06532013B5E6002811B6 /* TimeInterval+String.swift in Sources */,
+				27147641238D1AF800F3E3E3 /* MenuController.swift in Sources */,
 				01DD8B5A1E2B5DEE0081B1FC /* ViewController.swift in Sources */,
 				01DD8B581E2B5DED0081B1FC /* AppDelegate.swift in Sources */,
+				27147646238D1C7D00F3E3E3 /* MenuCell.swift in Sources */,
 				01DD8B6A1E2B5EDB0081B1FC /* OpalImagePickerCollectionViewLayout.swift in Sources */,
+				27147648238D1FB100F3E3E3 /* AlbumModel.swift in Sources */,
 				01D2F91D1E2B6BC70038A37C /* Bundle+Helper.swift in Sources */,
 				01DD8B661E2B5E6C0081B1FC /* OpalImagePickerController.swift in Sources */,
 			);

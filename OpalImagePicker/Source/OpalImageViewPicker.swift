@@ -9,7 +9,7 @@
 import UIKit
 import Photos
 
-class OpalImageViewPicker: UIView{
+class OpalImageViewPicker: UIView,OpalImagePickerControllerDelegate{
     
     weak var delegate: OpalImagePickerControllerDelegate? {
         didSet {
@@ -40,9 +40,16 @@ class OpalImageViewPicker: UIView{
         }
     }
     
+    var selectionButtonTitle:String = "Select" {
+        didSet{
+            initializer()
+        }
+    }
+    
     private var root:OpalImagePickerRootViewController!
     
     private let imagePicker = OpalImagePickerController()
+    private var selectedImage:UIImage!
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -53,7 +60,7 @@ class OpalImageViewPicker: UIView{
     }
     
     private func initializer(){
-        imagePicker.imagePickerDelegate = delegate
+        imagePicker.imagePickerDelegate = self
         let parent = self.parentViewController
         parent!.addChild(imagePicker)
         imagePicker.viewControllers[0].view.frame = CGRect(x: 0, y: 0, width: self.frame.width, height: self.frame.height)
@@ -62,13 +69,27 @@ class OpalImageViewPicker: UIView{
         self.addSubview(imagePickerView!)
         
         constraintBuilder(imagePickerView: imagePickerView!)
-        configurations()
-
+        configurations(imagePicker: self.imagePicker)
+        
         imagePicker.viewControllers[0].didMove(toParent: parent!)
+        
+        navigationSelection()
+    }
+    
+    private func navigationSelection(){
+        let doneButton = UIBarButtonItem(title: selectionButtonTitle, style: .done, target: self, action: #selector(selectionTapped))
+        parentViewController?.navigationItem.rightBarButtonItem = doneButton
+    }
+    @objc func selectionTapped() {
+        let imagePicker = OpalImagePickerController()
+        imagePicker.imagePickerDelegate = self
+        imagePicker.selectionImage = selectionImage
+        configurations(imagePicker: imagePicker)
+        parentViewController?.present(imagePicker, animated: true, completion: nil)
     }
     
     // MARK: Configurations
-    private func configurations(){
+    private func configurations(imagePicker:OpalImagePickerController){
         imagePicker.maximumSelectionsAllowed = maximumSelectionsAllowed
         imagePicker.allowedMediaTypes = allowedMediaTypes
         root.shouldResetItems = shouldResetItems
@@ -81,7 +102,41 @@ class OpalImageViewPicker: UIView{
         NSLayoutConstraint(item: imagePickerView, attribute: NSLayoutConstraint.Attribute.centerX, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self, attribute: NSLayoutConstraint.Attribute.centerX, multiplier: 1, constant: 0).isActive = true
         NSLayoutConstraint(item: imagePickerView, attribute: NSLayoutConstraint.Attribute.centerY, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self, attribute: NSLayoutConstraint.Attribute.centerY, multiplier: 1, constant: 0).isActive = true
         NSLayoutConstraint(item: imagePickerView, attribute: NSLayoutConstraint.Attribute.width, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self, attribute: NSLayoutConstraint.Attribute.width, multiplier: 1, constant: 0).isActive = true
-                NSLayoutConstraint(item: imagePickerView, attribute: NSLayoutConstraint.Attribute.height, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self, attribute: NSLayoutConstraint.Attribute.height, multiplier: 1, constant: 0).isActive = true
+        NSLayoutConstraint(item: imagePickerView, attribute: NSLayoutConstraint.Attribute.height, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self, attribute: NSLayoutConstraint.Attribute.height, multiplier: 1, constant: 0).isActive = true
+        
+    }
+    func imagePicker(_ picker: OpalImagePickerController, didFinishPickingImages images: [UIImage]) {
+        selectedImage = images.first!
+        delegate?.imagePicker?(picker, didFinishPickingImages: images)
+    }
+    func imagePicker(_ picker: OpalImagePickerController, didFinishPickingAssets assets: [PHAsset]) {
+        if picker != imagePicker {
+            let images = PHAsset.fetchAssets(with: root.fetchOptions)
+            images.enumerateObjects { (asset, id, pointer) in
+                if asset == assets.first! {
+                    var isSelected = false
+                    for i in self.root.selectedIndexPaths.enumerated() {
+                        if i.element == IndexPath(item: id, section: 0) {
+                            isSelected = true
+                            break
+                        }
+                    }
+                    if !isSelected {
+                        let collectionViewItems = self.root.collectionView?.indexPathsForSelectedItems?.count ?? 0
+                        let externalCollectionViewItems = self.root.externalCollectionView?.indexPathsForSelectedItems?.count ?? 0
+                        
+                        if self.root.maximumSelectionsAllowed <= collectionViewItems + externalCollectionViewItems {
+                            self.root.collectionView?.deselectItem(at: self.root.selectedIndexPaths.first!, animated: true)
+                            self.root.set(image: nil, indexPath: self.root.selectedIndexPaths.first!, isExternal: self.root.collectionView == self.root.externalCollectionView)
+                            
+                        }
+                        self.root.set(image: self.selectedImage, indexPath: IndexPath(item: id, section: 0), isExternal: self.root.collectionView == self.root.externalCollectionView)
+                        self.root.collectionView?.selectItem(at: IndexPath(item: id, section: 0), animated: false, scrollPosition: UICollectionView.ScrollPosition.top)
+                        return
+                    }
+                }
+            }
+        }
         
     }
 }

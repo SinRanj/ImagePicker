@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15400" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15404"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="cell" rowHeight="90" id="uw5-MY-7Dq" customClass="MenuCell" customModule="OpalImagePicker" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="90"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="uw5-MY-7Dq" id="Jqb-OM-pV3">
+                <rect key="frame" x="0.0" y="0.0" width="414" height="90"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="lJI-OC-39l">
+                        <rect key="frame" x="20" y="12" width="66" height="66"/>
+                        <color key="backgroundColor" systemColor="linkColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="width" secondItem="lJI-OC-39l" secondAttribute="height" multiplier="1:1" id="iGf-pl-u9H"/>
+                        </constraints>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rRv-nw-hrm">
+                        <rect key="frame" x="94" y="22" width="35.5" height="17"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wou-3d-epq">
+                        <rect key="frame" x="94" y="53.5" width="31" height="14.5"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                        <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="tick" translatesAutoresizingMaskIntoConstraints="NO" id="vQS-vp-N9w">
+                        <rect key="frame" x="375.5" y="38" width="18.5" height="14"/>
+                        <constraints>
+                            <constraint firstAttribute="width" secondItem="vQS-vp-N9w" secondAttribute="height" multiplier="33:25" id="bdf-Dr-1iN"/>
+                        </constraints>
+                    </imageView>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="wou-3d-epq" firstAttribute="leading" secondItem="lJI-OC-39l" secondAttribute="trailing" constant="8" id="7OR-WG-9ox"/>
+                    <constraint firstItem="lJI-OC-39l" firstAttribute="leading" secondItem="Jqb-OM-pV3" secondAttribute="leading" constant="20" id="9cG-2w-VU2"/>
+                    <constraint firstAttribute="bottom" secondItem="lJI-OC-39l" secondAttribute="bottom" constant="12" id="AK2-N0-UIJ"/>
+                    <constraint firstAttribute="trailing" secondItem="vQS-vp-N9w" secondAttribute="trailing" constant="20" id="Nnl-Gv-XuK"/>
+                    <constraint firstItem="rRv-nw-hrm" firstAttribute="leading" secondItem="lJI-OC-39l" secondAttribute="trailing" constant="8" id="ODH-mh-DJD"/>
+                    <constraint firstItem="lJI-OC-39l" firstAttribute="top" secondItem="Jqb-OM-pV3" secondAttribute="top" constant="12" id="Rjl-sX-fbZ"/>
+                    <constraint firstAttribute="bottom" secondItem="vQS-vp-N9w" secondAttribute="bottom" constant="38" id="fh0-pd-ycq"/>
+                    <constraint firstItem="vQS-vp-N9w" firstAttribute="top" secondItem="Jqb-OM-pV3" secondAttribute="top" constant="38" id="gOJ-3Z-ltC"/>
+                    <constraint firstItem="wou-3d-epq" firstAttribute="bottom" secondItem="lJI-OC-39l" secondAttribute="bottom" constant="-10" id="pzn-cN-iJP"/>
+                    <constraint firstItem="rRv-nw-hrm" firstAttribute="top" secondItem="lJI-OC-39l" secondAttribute="top" constant="10" id="qfw-bA-jaX"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="cellDescription" destination="wou-3d-epq" id="f5Z-aR-F82"/>
+                <outlet property="cellImage" destination="lJI-OC-39l" id="fxw-hy-VAq"/>
+                <outlet property="cellTitle" destination="rRv-nw-hrm" id="eMF-rn-HCl"/>
+                <outlet property="selectedIcon" destination="vQS-vp-N9w" id="PQA-qd-V2R"/>
+            </connections>
+            <point key="canvasLocation" x="144.92753623188406" y="-16.071428571428569"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="tick" width="16" height="16"/>
+    </resources>
+</document>
