@@ -21,8 +21,8 @@ class ViewController: UIViewController,OpalImagePickerControllerDelegate {
         pickerView.delegate = self
         pickerView.maximumSelectionsAllowed = 2
         pickerView.shouldResetItems = true
-        pickerView.selectionImage = UIImage(named: "slide_up")
-        pickerView.doubleSelectionImage = UIImage(named: "double_slide_up")
+//        pickerView.selectionImage = UIImage(named: "slide_up")
+//        pickerView.doubleSelectionImage = UIImage(named: "double_slide_up")
         pickerView.allowedMediaTypes = Set([PHAssetMediaType.image])
         
     }

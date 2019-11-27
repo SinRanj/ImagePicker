@@ -34,12 +34,12 @@ class OpalImageViewPicker: UIView,OpalImagePickerControllerDelegate{
         }
     }
     
-    var selectionImage:UIImage! = UIImage(named: "checkmark") {
+    var selectionImage:UIImage! = UIImage(named: "slide_up") {
         didSet{
             initializer()
         }
     }
-    var doubleSelectionImage:UIImage! = UIImage(named: "checkmark") {
+    var doubleSelectionImage:UIImage! = UIImage(named: "double_slide_up") {
         didSet{
             initializer()
         }
@@ -118,14 +118,21 @@ class OpalImageViewPicker: UIView,OpalImagePickerControllerDelegate{
         }    }
     func imagePicker(_ picker: OpalImagePickerController, didFinishPickingAssets assets: [PHAsset]) {
         if picker != imagePicker {
-            let images = PHAsset.fetchAssets(with: root.fetchOptions)
-            images.enumerateObjects { (asset, id, pointer) in
-                if asset == assets.first! {
-                    for i in self.root.selectedIndexPaths.enumerated() {
-                        if i.element == IndexPath(item: id, section: 0) {
-                            break
+            if assets.count != 0 {
+                let images = PHAsset.fetchAssets(with: root.fetchOptions)
+                var isSelected = false
+                images.enumerateObjects { (asset, id, pointer) in
+                    if asset == assets.first! {
+                        for i in self.root.selectedIndexPaths.enumerated() {
+                            if i.element == IndexPath(item: id, section: 0) {
+                                isSelected = true
+                                break
+                            }
                         }
-                    }
+                        if isSelected {
+                            let cell = self.root.collectionView?.cellForItem(at: IndexPath(item: id, section: 0)) as? ImagePickerCollectionViewCell
+                            cell?.setDoubleSelected(true, animated: true)
+                        }
                         if self.root.maximumSelectionsAllowed <= self.root.selectedIndexPaths.count {
                             self.root.collectionView?.deselectItem(at: self.root.selectedIndexPaths.first!, animated: true)
                             self.root.set(image: nil, indexPath: self.root.selectedIndexPaths.first!, isExternal: self.root.collectionView == self.root.externalCollectionView)
@@ -136,6 +143,7 @@ class OpalImageViewPicker: UIView,OpalImagePickerControllerDelegate{
                         self.root.collectionView?.selectItem(at: IndexPath(item: id, section: 0), animated: false, scrollPosition: UICollectionView.ScrollPosition.top)
                         self.root.doneTapped()
                         print("")
+                    }
                 }
             }
         }

@@ -95,7 +95,7 @@ open class OpalImagePickerRootViewController: UIViewController,MenuDelegate {
     open var shouldResetItems: Bool = false
     
     /// Page size for paging through the Photo Assets in the Photo Library. Defaults to 100. Must override to change this value. Only works in iOS 9.0+
-    public let pageSize = 100
+    public let pageSize = 10000
     
     var photoAssets: PHFetchResult<PHAsset> = PHFetchResult()
     weak var doneButton: UIBarButtonItem?
@@ -641,6 +641,15 @@ extension OpalImagePickerRootViewController: UICollectionViewDataSource {
         }
         if let doubleSelectionImage = self.doubleSelectionImage {
             cell.doubleSelectionImage = doubleSelectionImage
+        }
+        var count = 0
+        for i in selectedIndexPaths {
+            if i == indexPath {
+                count += 1
+            }
+        }
+        if count == 2 {
+            cell.setDoubleSelected(true, animated: true)
         }
         return cell
     }

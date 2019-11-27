@@ -63,7 +63,7 @@ class ImagePickerCollectionViewCell: UICollectionViewCell {
     
     open var selectionImage: UIImage? {
         didSet {
-            overlayImageView?.image = selectionImage?.withRenderingMode(.alwaysTemplate)
+            overlayImageView?.image = selectionImage?.withRenderingMode(.alwaysOriginal)
         }
     }
     open var doubleSelectionImage: UIImage?
@@ -276,7 +276,7 @@ class ImagePickerCollectionViewCell: UICollectionViewCell {
         let overlayImageView = UIImageView(frame: frame)
         overlayImageView.translatesAutoresizingMaskIntoConstraints = false
         overlayImageView.contentMode = .scaleAspectFit
-        overlayImageView.image = selectionImage ?? UIImage(named: "checkmark")?.withRenderingMode(.alwaysTemplate)
+        overlayImageView.image = selectionImage?.withRenderingMode(.alwaysOriginal) ?? UIImage(named: "slide_up")?.withRenderingMode(.alwaysOriginal)
         overlayImageView.tintColor = selectionImageTintColor
         overlayImageView.alpha = 0
         contentView.addSubview(overlayImageView)
