@@ -278,7 +278,10 @@ open class OpalImagePickerRootViewController: UIViewController,MenuDelegate {
         setup()
         
         albumModel = [AlbumModel]()
-        status = requestPhotoAccessIfNeeded(PHPhotoLibrary.authorizationStatus())
+        if PHPhotoLibrary.authorizationStatus() == .authorized {
+            status = true
+        }
+//        status = requestPhotoAccessIfNeeded(PHPhotoLibrary.authorizationStatus())
         let userCollections = PHCollectionList.fetchTopLevelUserCollections(with: nil)
         
         if status {
@@ -465,8 +468,14 @@ open class OpalImagePickerRootViewController: UIViewController,MenuDelegate {
     func requestPhotoAccessIfNeeded(_ status: PHAuthorizationStatus)->Bool {
         var isAvailable = false
         guard status == .notDetermined else { return false}
-        PHPhotoLibrary.requestAuthorization { [weak self] (_) in
+        let v = PHPhotoLibrary.authorizationStatus()
+        if v == PHAuthorizationStatus.authorized {
             isAvailable = true
+        }
+        else {
+            isAvailable = false
+        }
+        PHPhotoLibrary.requestAuthorization { [weak self] (_) in
             DispatchQueue.main.async { [weak self] in
                 self?.photoAssets = PHAsset.fetchAssets(with: self?.fetchOptions)
                 self?.collectionView?.reloadData()

@@ -66,11 +66,11 @@ class OpalImageViewPicker: UIView,OpalImagePickerControllerDelegate{
     
     private func initializer(){
         root = imagePicker.viewControllers[0] as? OpalImagePickerRootViewController
-        let status = root.requestPhotoAccessIfNeeded(PHPhotoLibrary.authorizationStatus())
-        if status {
-            let permissionVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "Permission")
-            parentViewController?.present(permissionVC, animated: true, completion: nil)
-        }
+//        let status = root.requestPhotoAccessIfNeeded(PHPhotoLibrary.authorizationStatus())
+//        if !status {
+//            let permissionVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "Permission")
+//            parentViewController?.present(permissionVC, animated: true, completion: nil)
+//        }
 
         imagePicker.imagePickerDelegate = self
         let parent = self.parentViewController
