@@ -11,7 +11,7 @@ import Photos
 
 /// Image Picker Root View Controller contains the logic for selecting images. The images are displayed in a `UICollectionView`, and multiple images can be selected.
 open class OpalImagePickerRootViewController: UIViewController,MenuDelegate {
-
+    
     
     
     /// Delegate for Image Picker. Notifies when images are selected (done is tapped) or when the Image Picker is cancelled.
@@ -146,7 +146,7 @@ open class OpalImagePickerRootViewController: UIViewController,MenuDelegate {
     private var titleView:UILabel!
     private var items:[menuItem]!
     private var albumModel:[AlbumModel]!
-    private var status = false
+    private var status:Bool?
     fileprivate weak var rightExternalCollectionViewConstraint: NSLayoutConstraint?
     
     /// Initializer
@@ -228,7 +228,7 @@ open class OpalImagePickerRootViewController: UIViewController,MenuDelegate {
             toolbar.constraintEqualTo(with: topLayoutGuide, receiverAttribute: .top, otherAttribute: .bottom),
             toolbar.constraintEqualTo(with: view, attribute: .left),
             toolbar.constraintEqualTo(with: view, attribute: .right)
-            ])
+        ])
     }
     
     private func fetchPhotos() {
@@ -242,7 +242,7 @@ open class OpalImagePickerRootViewController: UIViewController,MenuDelegate {
         }
         else {
             photoAssets = PHAsset.fetchAssets(in: selectedCollection as! PHAssetCollection, options: fetchOptions)
-
+            
         }
         collectionView?.reloadData()
     }
@@ -278,38 +278,51 @@ open class OpalImagePickerRootViewController: UIViewController,MenuDelegate {
         setup()
         
         albumModel = [AlbumModel]()
-        if PHPhotoLibrary.authorizationStatus() == .authorized {
-            status = true
+        PHPhotoLibrary.requestAuthorization { (status) in
+            switch status {
+            case .authorized:
+                DispatchQueue.main.async {
+                    let userCollections = PHCollectionList.fetchTopLevelUserCollections(with: nil)
+                    self.albumModel.append(AlbumModel(colection: nil, index: nil))
+                    userCollections.enumerateObjects { (collection, id, pointer) in
+                        self.albumModel.append(AlbumModel(colection: collection, index: id))
+                    }
+                    self.items = [menuItem]()
+                    for i in self.albumModel {
+                        if i.colection == nil {
+                            let images = PHAsset.fetchAssets(with: self.fetchOptions)
+                            self.items.append(menuItem(title: "Recents", image: self.loadPhotoAsset(asset: images.firstObject!), description: "\(images.count)", id: i.index))
+                        }
+                        else {
+                            let images = PHAsset.fetchAssets(in: i.colection as! PHAssetCollection, options: self.fetchOptions)
+                            
+                            self.items.append(menuItem(title: i.colection!.localizedTitle, image: self.loadPhotoAsset(asset: images.firstObject), description: "\(images.count)", id: i.index))
+                        }
+                        
+                    }
+                    self.menu = Menu(viewController: self,items:self.items)
+                    self.menu.delegate = self
+                }
+            case .notDetermined:
+                DispatchQueue.main.async {
+                    let permissionVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "Permission")
+                    self.present(permissionVC, animated: true, completion: nil)
+                }
+            case .restricted:
+                DispatchQueue.main.async {
+                    let permissionVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "Permission")
+                    self.present(permissionVC, animated: true, completion: nil)
+                }
+            case .denied:
+                DispatchQueue.main.async {
+                    let permissionVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "Permission")
+                    self.present(permissionVC, animated: true, completion: nil)
+                }
+            @unknown default:
+                break;
+            }
         }
-//        status = requestPhotoAccessIfNeeded(PHPhotoLibrary.authorizationStatus())
-        let userCollections = PHCollectionList.fetchTopLevelUserCollections(with: nil)
         
-        if status {
-            albumModel.append(AlbumModel(colection: nil, index: nil))
-            userCollections.enumerateObjects { (collection, id, pointer) in
-                self.albumModel.append(AlbumModel(colection: collection, index: id))
-            }
-            items = [menuItem]()
-            for i in albumModel {
-                if i.colection == nil {
-                    let images = PHAsset.fetchAssets(with: fetchOptions)
-                    items.append(menuItem(title: "Recents", image: self.loadPhotoAsset(asset: images.firstObject!), description: "\(images.count)", id: i.index))
-                }
-                else {
-                    let images = PHAsset.fetchAssets(in: i.colection as! PHAssetCollection, options: fetchOptions)
-                    
-                    items.append(menuItem(title: i.colection!.localizedTitle, image: self.loadPhotoAsset(asset: images.firstObject), description: "\(images.count)", id: i.index))
-                }
-
-            }
-            menu = Menu(viewController: self,items:items)
-            menu.delegate = self
-        }
-        else {
-            let permissionVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "Permission")
-            present(permissionVC, animated: true, completion: nil)
-        }
-
         titleView = UILabel()
         titleView.text = configuration?.navigationTitle ?? NSLocalizedString("Recents", comment: "")
         titleView.textAlignment = .center
@@ -320,7 +333,7 @@ open class OpalImagePickerRootViewController: UIViewController,MenuDelegate {
         titleView.isUserInteractionEnabled = true
         titleView.addGestureRecognizer(recognizer)
         
-//        navigationItem.title = configuration?.navigationTitle ?? NSLocalizedString("Photos", comment: "")
+        //        navigationItem.title = configuration?.navigationTitle ?? NSLocalizedString("Photos", comment: "")
         
         let cancelButtonTitle = configuration?.cancelButtonTitle ?? NSLocalizedString("Cancel", comment: "")
         let cancelButton = UIBarButtonItem(title: cancelButtonTitle, style: .plain, target: self, action: #selector(cancelTapped))
@@ -370,11 +383,11 @@ open class OpalImagePickerRootViewController: UIViewController,MenuDelegate {
         
         let indexPathsForSelectedItems = selectedIndexPaths
         let externalIndexPaths = externalSelectedIndexPaths
-//        guard indexPathsForSelectedItems.count + externalIndexPaths.count > 0 else {
-//            cancelTapped()
-//            return
-//        }
-//
+        //        guard indexPathsForSelectedItems.count + externalIndexPaths.count > 0 else {
+        //            cancelTapped()
+        //            return
+        //        }
+        //
         var photoAssets: [PHAsset] = []
         for indexPath in indexPathsForSelectedItems {
             guard indexPath.item < self.photoAssets.count else { continue }
@@ -495,12 +508,12 @@ open class OpalImagePickerRootViewController: UIViewController,MenuDelegate {
             rightExternalCollectionViewConstraint = rightConstraint
         }
         rightExternalCollectionViewConstraint?.isActive = showExternalImages
-            
+        
         UIView.animate(withDuration: 0.2, animations: { [weak self] in
             sender.isUserInteractionEnabled = false
             self?.view.layoutIfNeeded()
-        }, completion: { _ in
-            sender.isUserInteractionEnabled = true
+            }, completion: { _ in
+                sender.isUserInteractionEnabled = true
         })
     }
     
@@ -563,7 +576,7 @@ extension OpalImagePickerRootViewController: UICollectionViewDelegate {
             let cell = collectionView.cellForItem(at: indexPath) as? ImagePickerCollectionViewCell
             cell?.setDoubleSelected(true, animated: true)
             set(image: image, indexPath: indexPath, isExternal: collectionView == self.externalCollectionView)
-               doneTapped()
+            doneTapped()
         }
         return false
     }
@@ -573,14 +586,14 @@ extension OpalImagePickerRootViewController: UICollectionViewDelegate {
     /// - Parameters:
     ///   - collectionView: the `UICollectionView`
     ///   - indexPath: the `IndexPath`
-//    public func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-//        set(image: nil, indexPath: indexPath, isExternal: collectionView == self.externalCollectionView)
-//        doneTapped()
-////        guard let cell = collectionView.cellForItem(at: indexPath) as? ImagePickerCollectionViewCell,
-////            let image = cell.imageView.image else { return }
-////        set(image: image, indexPath: indexPath, isExternal: collectionView == self.externalCollectionView)
-////        doneTapped()
-//    }
+    //    public func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+    //        set(image: nil, indexPath: indexPath, isExternal: collectionView == self.externalCollectionView)
+    //        doneTapped()
+    ////        guard let cell = collectionView.cellForItem(at: indexPath) as? ImagePickerCollectionViewCell,
+    ////            let image = cell.imageView.image else { return }
+    ////        set(image: image, indexPath: indexPath, isExternal: collectionView == self.externalCollectionView)
+    ////        doneTapped()
+    //    }
     
     public func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
         guard let cell = collectionView.cellForItem(at: indexPath) as? ImagePickerCollectionViewCell,
@@ -611,7 +624,7 @@ extension OpalImagePickerRootViewController: UICollectionViewDelegate {
                 present(alert, animated: true, completion: nil)
                 return false
             }
-
+            
         }
         return true
     }
