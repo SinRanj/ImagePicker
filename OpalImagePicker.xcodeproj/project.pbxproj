@@ -31,6 +31,7 @@
 		279D0C10238BF3D100DE3A61 /* OpalImageViewPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 279D0C0F238BF3D100DE3A61 /* OpalImageViewPicker.swift */; };
 		279D0C12238C0A3800DE3A61 /* UIViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 279D0C11238C0A3800DE3A61 /* UIViewExtensions.swift */; };
 		27E27526238E77F000A60FB1 /* PHAssetExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27E27525238E77F000A60FB1 /* PHAssetExtensions.swift */; };
+		27E27528238E9F1B00A60FB1 /* PermissionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27E27527238E9F1B00A60FB1 /* PermissionVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +73,7 @@
 		279D0C0F238BF3D100DE3A61 /* OpalImageViewPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpalImageViewPicker.swift; sourceTree = "<group>"; };
 		279D0C11238C0A3800DE3A61 /* UIViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtensions.swift; sourceTree = "<group>"; };
 		27E27525238E77F000A60FB1 /* PHAssetExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PHAssetExtensions.swift; sourceTree = "<group>"; };
+		27E27527238E9F1B00A60FB1 /* PermissionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionVC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -161,6 +163,7 @@
 				01DD8B551E2B5DED0081B1FC /* AppDelegate.swift */,
 				01DD8B561E2B5DED0081B1FC /* Info.plist */,
 				01DD8B571E2B5DED0081B1FC /* ViewController.swift */,
+				27E27527238E9F1B00A60FB1 /* PermissionVC.swift */,
 			);
 			path = SupportingFiles;
 			sourceTree = "<group>";
@@ -306,6 +309,7 @@
 				279D0C10238BF3D100DE3A61 /* OpalImageViewPicker.swift in Sources */,
 				01B2D5F31F805D89005D2473 /* UIView+Helper.swift in Sources */,
 				010B06532013B5E6002811B6 /* TimeInterval+String.swift in Sources */,
+				27E27528238E9F1B00A60FB1 /* PermissionVC.swift in Sources */,
 				27147641238D1AF800F3E3E3 /* MenuController.swift in Sources */,
 				01DD8B5A1E2B5DEE0081B1FC /* ViewController.swift in Sources */,
 				01DD8B581E2B5DED0081B1FC /* AppDelegate.swift in Sources */,

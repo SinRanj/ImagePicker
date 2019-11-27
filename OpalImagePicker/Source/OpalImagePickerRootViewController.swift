@@ -146,7 +146,7 @@ open class OpalImagePickerRootViewController: UIViewController,MenuDelegate {
     private var titleView:UILabel!
     private var items:[menuItem]!
     private var albumModel:[AlbumModel]!
-    
+    private var status = false
     fileprivate weak var rightExternalCollectionViewConstraint: NSLayoutConstraint?
     
     /// Initializer
@@ -273,34 +273,40 @@ open class OpalImagePickerRootViewController: UIViewController,MenuDelegate {
     open override func loadView() {
         view = UIView()
     }
-    
     open override func viewDidLoad() {
         super.viewDidLoad()
         setup()
         
         albumModel = [AlbumModel]()
+        status = requestPhotoAccessIfNeeded(PHPhotoLibrary.authorizationStatus())
         let userCollections = PHCollectionList.fetchTopLevelUserCollections(with: nil)
         
-        albumModel.append(AlbumModel(colection: nil, index: nil))
-        userCollections.enumerateObjects { (collection, id, pointer) in
-            self.albumModel.append(AlbumModel(colection: collection, index: id))
-        }
-        
-        items = [menuItem]()
-        for i in albumModel {
-            if i.colection == nil {
-                let images = PHAsset.fetchAssets(with: fetchOptions)
-                items.append(menuItem(title: "Recents", image: self.loadPhotoAsset(asset: images.firstObject!), description: "\(images.count)", id: i.index))
+        if status {
+            albumModel.append(AlbumModel(colection: nil, index: nil))
+            userCollections.enumerateObjects { (collection, id, pointer) in
+                self.albumModel.append(AlbumModel(colection: collection, index: id))
             }
-            else {
-                let images = PHAsset.fetchAssets(in: i.colection as! PHAssetCollection, options: fetchOptions)
-                
-                items.append(menuItem(title: i.colection!.localizedTitle, image: self.loadPhotoAsset(asset: images.firstObject), description: "\(images.count)", id: i.index))
-            }
+            items = [menuItem]()
+            for i in albumModel {
+                if i.colection == nil {
+                    let images = PHAsset.fetchAssets(with: fetchOptions)
+                    items.append(menuItem(title: "Recents", image: self.loadPhotoAsset(asset: images.firstObject!), description: "\(images.count)", id: i.index))
+                }
+                else {
+                    let images = PHAsset.fetchAssets(in: i.colection as! PHAssetCollection, options: fetchOptions)
+                    
+                    items.append(menuItem(title: i.colection!.localizedTitle, image: self.loadPhotoAsset(asset: images.firstObject), description: "\(images.count)", id: i.index))
+                }
 
+            }
+            menu = Menu(viewController: self,items:items)
+            menu.delegate = self
         }
-        menu = Menu(viewController: self,items:items)
-        menu.delegate = self
+        else {
+            let permissionVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "Permission")
+            present(permissionVC, animated: true, completion: nil)
+        }
+
         titleView = UILabel()
         titleView.text = configuration?.navigationTitle ?? NSLocalizedString("Recents", comment: "")
         titleView.textAlignment = .center
@@ -456,14 +462,17 @@ open class OpalImagePickerRootViewController: UIViewController,MenuDelegate {
         collectionView?.insertItems(at: indexPaths)
     }
     
-    private func requestPhotoAccessIfNeeded(_ status: PHAuthorizationStatus) {
-        guard status == .notDetermined else { return }
+    func requestPhotoAccessIfNeeded(_ status: PHAuthorizationStatus)->Bool {
+        var isAvailable = false
+        guard status == .notDetermined else { return false}
         PHPhotoLibrary.requestAuthorization { [weak self] (_) in
+            isAvailable = true
             DispatchQueue.main.async { [weak self] in
                 self?.photoAssets = PHAsset.fetchAssets(with: self?.fetchOptions)
                 self?.collectionView?.reloadData()
             }
         }
+        return isAvailable
     }
     
     @objc private func segmentTapped(_ sender: UISegmentedControl) {
