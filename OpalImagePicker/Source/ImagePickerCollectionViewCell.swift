@@ -66,6 +66,7 @@ class ImagePickerCollectionViewCell: UICollectionViewCell {
             overlayImageView?.image = selectionImage?.withRenderingMode(.alwaysTemplate)
         }
     }
+    open var doubleSelectionImage: UIImage?
     
     override var isSelected: Bool {
         set {
@@ -79,6 +80,10 @@ class ImagePickerCollectionViewCell: UICollectionViewCell {
     func setSelected(_ isSelected: Bool, animated: Bool) {
         super.isSelected = isSelected
         updateSelected(animated)
+    }
+    func setDoubleSelected(_ isSelected: Bool, animated: Bool) {
+        super.isSelected = isSelected
+        updateDoubleSelected(true)
     }
     
     lazy var imageView: UIImageView = {
@@ -249,7 +254,16 @@ class ImagePickerCollectionViewCell: UICollectionViewCell {
             removeOverlay(animated)
         }
     }
-    
+    private func updateDoubleSelected(_ animated: Bool) {
+        if isSelected {
+            addDoubleOverlay()
+        } else {
+            removeOverlay(animated)
+        }
+    }
+    private func addDoubleOverlay(){
+        overlayImageView?.image = doubleSelectionImage
+    }
     private func addOverlay(_ animated: Bool) {
         guard self.overlayView == nil && self.overlayImageView == nil else { return }
         
@@ -261,7 +275,7 @@ class ImagePickerCollectionViewCell: UICollectionViewCell {
         
         let overlayImageView = UIImageView(frame: frame)
         overlayImageView.translatesAutoresizingMaskIntoConstraints = false
-        overlayImageView.contentMode = .center
+        overlayImageView.contentMode = .scaleAspectFit
         overlayImageView.image = selectionImage ?? UIImage(named: "checkmark")?.withRenderingMode(.alwaysTemplate)
         overlayImageView.tintColor = selectionImageTintColor
         overlayImageView.alpha = 0
@@ -269,8 +283,8 @@ class ImagePickerCollectionViewCell: UICollectionViewCell {
         self.overlayImageView = overlayImageView
         
         let overlayViewConstraints = overlayView.constraintsToFill(otherView: contentView)
-        let overlayImageViewConstraints = overlayImageView.constraintsToFill(otherView: contentView)
-        NSLayoutConstraint.activate(overlayImageViewConstraints + overlayViewConstraints)
+        let overlayImageViewConstraints = overlayImageView.constraintsTopRight(otherView: contentView)
+        NSLayoutConstraint.activate(overlayImageViewConstraints+overlayViewConstraints)
         layoutIfNeeded()
         
         let duration = animated ? 0.2 : 0.0

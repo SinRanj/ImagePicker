@@ -122,6 +122,14 @@ open class OpalImagePickerController: UINavigationController {
         }
     }
     
+    /// Custom double selection image (checkmark).
+    @objc open var doubleSelectionImage: UIImage? {
+        didSet {
+            let rootVC = viewControllers.first as? OpalImagePickerRootViewController
+            rootVC?.doubleSelectionImage = doubleSelectionImage
+        }
+    }
+    
     /// Maximum photo selections allowed in picker (zero or fewer means unlimited).
     @objc open var maximumSelectionsAllowed: Int = -1 {
         didSet {

@@ -69,6 +69,13 @@ open class OpalImagePickerRootViewController: UIViewController,MenuDelegate {
         }
     }
     
+    /// Custom double selection image (checkmark).
+    open var doubleSelectionImage: UIImage? {
+        didSet {
+            collectionView?.reloadData()
+        }
+    }
+    
     /// Allowed Media Types that can be fetched. See `PHAssetMediaType`
     open var allowedMediaTypes: Set<PHAssetMediaType>? {
         didSet {
@@ -120,7 +127,7 @@ open class OpalImagePickerRootViewController: UIViewController,MenuDelegate {
     }
     
     private var photosCompleted = 0
-    private var savedImages: [UIImage] = []
+    var savedImages: [UIImage] = []
     private var imagesDict: [IndexPath: UIImage] = [:]
     private var showExternalImages = false
     var selectedIndexPaths: [IndexPath] = []
@@ -354,11 +361,11 @@ open class OpalImagePickerRootViewController: UIViewController,MenuDelegate {
         
         let indexPathsForSelectedItems = selectedIndexPaths
         let externalIndexPaths = externalSelectedIndexPaths
-        guard indexPathsForSelectedItems.count + externalIndexPaths.count > 0 else {
-            cancelTapped()
-            return
-        }
-        
+//        guard indexPathsForSelectedItems.count + externalIndexPaths.count > 0 else {
+//            cancelTapped()
+//            return
+//        }
+//
         var photoAssets: [PHAsset] = []
         for indexPath in indexPathsForSelectedItems {
             guard indexPath.item < self.photoAssets.count else { continue }
@@ -427,6 +434,7 @@ open class OpalImagePickerRootViewController: UIViewController,MenuDelegate {
         } else {
             selectedIndexPaths = selectedIndexPaths.filter { $0 != indexPath }
         }
+        print("")
     }
     
     private func get(imageForIndexPath indexPath: IndexPath, isExternal: Bool) -> UIImage? {
@@ -505,16 +513,56 @@ extension OpalImagePickerRootViewController: UICollectionViewDelegate {
         doneTapped()
         
     }
+    public func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
+        guard let cell = collectionView.cellForItem(at: indexPath) as? ImagePickerCollectionViewCell,
+            let image = cell.imageView.image else { return false}
+        guard maximumSelectionsAllowed > 0 else { return true }
+        if maximumSelectionsAllowed <= selectedIndexPaths.count {
+            //We exceeded maximum allowed, so alert user. Don't allow selection
+            
+            if shouldResetItems {
+                collectionView.deselectItem(at: selectedIndexPaths.first!, animated: true)
+                collectionView.deselectItem(at: selectedIndexPaths.last!, animated: true)
+                set(image: nil, indexPath: selectedIndexPaths.first!, isExternal: collectionView == self.externalCollectionView)
+                if selectedIndexPaths.count != 0 {
+                    set(image: nil, indexPath: selectedIndexPaths.last!, isExternal: collectionView == self.externalCollectionView)
+                }
+                doneTapped()
+                return false
+            }
+            else {
+                let message = configuration?.maximumSelectionsAllowedMessage ?? NSLocalizedString("You cannot select more than \(maximumSelectionsAllowed) images. Please deselect another image before trying to select again.", comment: "You cannot select more than (x) images. Please deselect another image before trying to select again. (OpalImagePicker)")
+                let alert = UIAlertController(title: "", message: message, preferredStyle: .alert)
+                let okayString = configuration?.okayString ?? NSLocalizedString("OK", comment: "OK")
+                let action = UIAlertAction(title: okayString, style: .cancel, handler: nil)
+                alert.addAction(action)
+                present(alert, animated: true, completion: nil)
+                doneTapped()
+                return false
+            }
+        }
+        else {
+            let cell = collectionView.cellForItem(at: indexPath) as? ImagePickerCollectionViewCell
+            cell?.setDoubleSelected(true, animated: true)
+            set(image: image, indexPath: indexPath, isExternal: collectionView == self.externalCollectionView)
+               doneTapped()
+        }
+        return false
+    }
     
     /// Collection View did de-select item at `IndexPath`
     ///
     /// - Parameters:
     ///   - collectionView: the `UICollectionView`
     ///   - indexPath: the `IndexPath`
-    public func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        set(image: nil, indexPath: indexPath, isExternal: collectionView == self.externalCollectionView)
-        doneTapped()
-    }
+//    public func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+//        set(image: nil, indexPath: indexPath, isExternal: collectionView == self.externalCollectionView)
+//        doneTapped()
+////        guard let cell = collectionView.cellForItem(at: indexPath) as? ImagePickerCollectionViewCell,
+////            let image = cell.imageView.image else { return }
+////        set(image: image, indexPath: indexPath, isExternal: collectionView == self.externalCollectionView)
+////        doneTapped()
+//    }
     
     public func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
         guard let cell = collectionView.cellForItem(at: indexPath) as? ImagePickerCollectionViewCell,
@@ -524,12 +572,16 @@ extension OpalImagePickerRootViewController: UICollectionViewDelegate {
         let collectionViewItems = self.collectionView?.indexPathsForSelectedItems?.count ?? 0
         let externalCollectionViewItems = self.externalCollectionView?.indexPathsForSelectedItems?.count ?? 0
         
-        if maximumSelectionsAllowed <= collectionViewItems + externalCollectionViewItems {
+        if maximumSelectionsAllowed <= selectedIndexPaths.count {
             //We exceeded maximum allowed, so alert user. Don't allow selection
             
             if shouldResetItems {
                 collectionView.deselectItem(at: selectedIndexPaths.first!, animated: true)
+                collectionView.deselectItem(at: selectedIndexPaths.last!, animated: true)
                 set(image: nil, indexPath: selectedIndexPaths.first!, isExternal: collectionView == self.externalCollectionView)
+                if selectedIndexPaths.count != 0 {
+                    set(image: nil, indexPath: selectedIndexPaths.last!, isExternal: collectionView == self.externalCollectionView)
+                }
                 return true
             }
             else {
@@ -587,7 +639,9 @@ extension OpalImagePickerRootViewController: UICollectionViewDataSource {
         if let selectionImage = self.selectionImage {
             cell.selectionImage = selectionImage
         }
-        
+        if let doubleSelectionImage = self.doubleSelectionImage {
+            cell.doubleSelectionImage = doubleSelectionImage
+        }
         return cell
     }
     private func externalCollectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

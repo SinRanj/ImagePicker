@@ -33,4 +33,14 @@ extension UIView {
     func constraintEqualTo(with otherView: Any, receiverAttribute: NSLayoutConstraint.Attribute, otherAttribute: NSLayoutConstraint.Attribute) -> NSLayoutConstraint {
         return NSLayoutConstraint(item: self, attribute: receiverAttribute, relatedBy: .equal, toItem: otherView, attribute: otherAttribute, multiplier: 1.0, constant: 0.0)
     }
+    
+    
+    func constraintsTopRight(otherView: Any) -> [NSLayoutConstraint] {
+        return [
+            NSLayoutConstraint(item: self, attribute: .top, relatedBy: .equal, toItem: otherView, attribute: .top, multiplier: 1.0, constant: 0.0),
+            NSLayoutConstraint(item: self, attribute: .right, relatedBy: .equal, toItem: otherView, attribute: .right, multiplier: 1.0, constant: 0.0),
+            NSLayoutConstraint(item: self, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 40.0),
+            NSLayoutConstraint(item: self, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 40.0)
+        ]
+    }
 }

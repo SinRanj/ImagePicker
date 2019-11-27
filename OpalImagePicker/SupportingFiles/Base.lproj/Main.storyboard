@@ -20,22 +20,50 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FyD-5h-kaa" customClass="OpalImageViewPicker" customModule="OpalImagePicker" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="554" width="414" height="308"/>
+                                <rect key="frame" x="20" y="554" width="374" height="308"/>
                                 <color key="backgroundColor" systemColor="systemGreenColor" red="0.20392156859999999" green="0.78039215689999997" blue="0.34901960780000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="308" id="75p-IQ-1mh"/>
                                 </constraints>
                             </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dJH-Ug-moT">
+                                <rect key="frame" x="20" y="88" width="374" height="466"/>
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Wbn-oX-FhP">
+                                        <rect key="frame" x="0.0" y="8" width="187" height="450"/>
+                                    </imageView>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="STU-Ro-9xW">
+                                        <rect key="frame" x="187" y="8" width="187" height="450"/>
+                                    </imageView>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <constraints>
+                                    <constraint firstItem="Wbn-oX-FhP" firstAttribute="width" secondItem="dJH-Ug-moT" secondAttribute="width" multiplier="0.5" id="4I3-zl-jn9"/>
+                                    <constraint firstItem="STU-Ro-9xW" firstAttribute="top" secondItem="dJH-Ug-moT" secondAttribute="top" constant="8" id="B8f-N3-NmT"/>
+                                    <constraint firstAttribute="trailing" secondItem="STU-Ro-9xW" secondAttribute="trailing" id="FYO-hY-t06"/>
+                                    <constraint firstItem="Wbn-oX-FhP" firstAttribute="leading" secondItem="dJH-Ug-moT" secondAttribute="leading" id="FuK-yX-tEQ"/>
+                                    <constraint firstItem="Wbn-oX-FhP" firstAttribute="top" secondItem="dJH-Ug-moT" secondAttribute="top" constant="8" id="PMp-Gn-lk0"/>
+                                    <constraint firstAttribute="bottom" secondItem="STU-Ro-9xW" secondAttribute="bottom" constant="8" id="UmH-8I-XPQ"/>
+                                    <constraint firstAttribute="bottom" secondItem="Wbn-oX-FhP" secondAttribute="bottom" constant="8" id="jFe-GZ-Btu"/>
+                                    <constraint firstItem="STU-Ro-9xW" firstAttribute="width" secondItem="Wbn-oX-FhP" secondAttribute="width" id="yJp-qG-Ae3"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="FyD-5h-kaa" secondAttribute="trailing" id="1nd-OU-zgM"/>
-                            <constraint firstItem="FyD-5h-kaa" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="4Bu-3v-BpT"/>
+                            <constraint firstAttribute="trailing" secondItem="FyD-5h-kaa" secondAttribute="trailing" constant="20" id="1nd-OU-zgM"/>
+                            <constraint firstItem="FyD-5h-kaa" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="20" id="4Bu-3v-BpT"/>
+                            <constraint firstItem="dJH-Ug-moT" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="fBm-Co-zPd"/>
+                            <constraint firstItem="FyD-5h-kaa" firstAttribute="top" secondItem="dJH-Ug-moT" secondAttribute="bottom" id="foO-fm-Hgw"/>
+                            <constraint firstItem="dJH-Ug-moT" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="gmu-Dy-Hto"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="dJH-Ug-moT" secondAttribute="trailing" id="pxD-3j-3bz"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="FyD-5h-kaa" secondAttribute="bottom" id="sFp-Tt-VhL"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="HzB-0g-wN1"/>
                     <connections>
+                        <outlet property="imageView1" destination="Wbn-oX-FhP" id="gcD-zE-SqO"/>
+                        <outlet property="imageView2" destination="STU-Ro-9xW" id="8YV-QM-Jfd"/>
                         <outlet property="pickerView" destination="FyD-5h-kaa" id="jV4-ZA-JQ3"/>
                     </connections>
                 </viewController>
