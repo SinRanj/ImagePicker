@@ -46,4 +46,7 @@ class ViewController: UIViewController,OpalImagePickerControllerDelegate {
             break;
         }
     }
+    func imagePicker(_ picker: OpalImagePickerController, didPickAssets assets: [PHAsset]) {
+        
+    }
 }

@@ -305,18 +305,15 @@ open class OpalImagePickerRootViewController: UIViewController,MenuDelegate {
                 }
             case .notDetermined:
                 DispatchQueue.main.async {
-                    let permissionVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "Permission")
-                    self.present(permissionVC, animated: true, completion: nil)
+                    self.loadPermissionVC()
                 }
             case .restricted:
                 DispatchQueue.main.async {
-                    let permissionVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "Permission")
-                    self.present(permissionVC, animated: true, completion: nil)
+                    self.loadPermissionVC()
                 }
             case .denied:
                 DispatchQueue.main.async {
-                    let permissionVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "Permission")
-                    self.present(permissionVC, animated: true, completion: nil)
+                    self.loadPermissionVC()
                 }
             @unknown default:
                 break;
@@ -344,6 +341,10 @@ open class OpalImagePickerRootViewController: UIViewController,MenuDelegate {
         let doneButton = UIBarButtonItem(title: doneButtonTitle, style: .done, target: self, action: #selector(doneTapped))
         navigationItem.rightBarButtonItem = doneButton
         self.doneButton = doneButton
+    }
+    private func loadPermissionVC(){
+        guard let permissionVC = Bundle.main.loadNibNamed("PermissionVC", owner: self, options: nil)?[0] as? PermissionVC else { return }
+        self.present(permissionVC, animated: true, completion: nil)
     }
     private func loadPhotoAsset(asset:PHAsset?)->UIImage? {
         let options = PHImageRequestOptions()

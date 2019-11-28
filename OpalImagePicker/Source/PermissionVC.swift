@@ -12,7 +12,7 @@ class PermissionVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
     }
     @IBAction func settingsBtnAct(_ sender: Any) {
         let settingsAppURL = URL(string:"App-Prefs:root=OpalImagePicker")

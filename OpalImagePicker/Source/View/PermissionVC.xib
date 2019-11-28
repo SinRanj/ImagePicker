@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15400" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15404"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PermissionVC" customModule="OpalImagePicker" customModuleProvider="target"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <viewController storyboardIdentifier="Permission" id="yfx-mx-NQZ" customClass="PermissionVC" customModule="OpalImagePicker" customModuleProvider="target">
+            <layoutGuides>
+                <viewControllerLayoutGuide type="top" id="fhq-8M-vEd"/>
+                <viewControllerLayoutGuide type="bottom" id="Weu-e3-5yy"/>
+            </layoutGuides>
+            <view key="view" contentMode="scaleToFill" id="eR9-m1-3Lq">
+                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please Allow Photo Access" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="p8b-Kg-0AI">
+                        <rect key="frame" x="28" y="417.5" width="358" height="21"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Fxi-qg-AWM">
+                        <rect key="frame" x="28" y="450.5" width="358" height="30"/>
+                        <state key="normal" title="Open Settings"/>
+                        <connections>
+                            <action selector="settingsBtnAct:" destination="yfx-mx-NQZ" eventType="touchUpInside" id="BK3-VJ-bRA"/>
+                        </connections>
+                    </button>
+                </subviews>
+                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                <constraints>
+                    <constraint firstItem="p8b-Kg-0AI" firstAttribute="leading" secondItem="eR9-m1-3Lq" secondAttribute="leadingMargin" constant="8" id="EWp-kn-Bom"/>
+                    <constraint firstItem="Fxi-qg-AWM" firstAttribute="leading" secondItem="p8b-Kg-0AI" secondAttribute="leading" id="FjH-C4-YY0"/>
+                    <constraint firstItem="Fxi-qg-AWM" firstAttribute="trailing" secondItem="p8b-Kg-0AI" secondAttribute="trailing" id="LDJ-dn-n1e"/>
+                    <constraint firstItem="Fxi-qg-AWM" firstAttribute="top" secondItem="p8b-Kg-0AI" secondAttribute="bottom" constant="12" id="P48-Zj-85l"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="p8b-Kg-0AI" secondAttribute="trailing" constant="8" id="S3H-OP-Qfd"/>
+                    <constraint firstItem="p8b-Kg-0AI" firstAttribute="centerY" secondItem="eR9-m1-3Lq" secondAttribute="centerY" constant="-20" id="pQ4-3a-VVF"/>
+                    <constraint firstItem="p8b-Kg-0AI" firstAttribute="centerX" secondItem="eR9-m1-3Lq" secondAttribute="centerX" id="sWW-6i-9Rp"/>
+                </constraints>
+                <viewLayoutGuide key="safeArea" id="ADK-EQ-ka5"/>
+            </view>
+            <navigationItem key="navigationItem" id="orC-5l-FFi"/>
+            <point key="canvasLocation" x="1780" y="75"/>
+        </viewController>
+    </objects>
+</document>

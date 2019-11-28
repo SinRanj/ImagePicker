@@ -153,6 +153,9 @@ class OpalImageViewPicker: UIView,OpalImagePickerControllerDelegate{
                 }
             }
         }
+        else {
+            delegate?.imagePicker?(picker, didPickAssets: assets)
+        }
         
     }
 }

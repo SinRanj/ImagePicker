@@ -30,6 +30,7 @@
 		27147648238D1FB100F3E3E3 /* AlbumModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27147647238D1FB100F3E3E3 /* AlbumModel.swift */; };
 		279D0C10238BF3D100DE3A61 /* OpalImageViewPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 279D0C0F238BF3D100DE3A61 /* OpalImageViewPicker.swift */; };
 		279D0C12238C0A3800DE3A61 /* UIViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 279D0C11238C0A3800DE3A61 /* UIViewExtensions.swift */; };
+		27A8052E238FCBD500C08B70 /* PermissionVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 27A8052D238FCBD500C08B70 /* PermissionVC.xib */; };
 		27E27526238E77F000A60FB1 /* PHAssetExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27E27525238E77F000A60FB1 /* PHAssetExtensions.swift */; };
 		27E27528238E9F1B00A60FB1 /* PermissionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27E27527238E9F1B00A60FB1 /* PermissionVC.swift */; };
 /* End PBXBuildFile section */
@@ -72,6 +73,7 @@
 		27147647238D1FB100F3E3E3 /* AlbumModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumModel.swift; sourceTree = "<group>"; };
 		279D0C0F238BF3D100DE3A61 /* OpalImageViewPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpalImageViewPicker.swift; sourceTree = "<group>"; };
 		279D0C11238C0A3800DE3A61 /* UIViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtensions.swift; sourceTree = "<group>"; };
+		27A8052D238FCBD500C08B70 /* PermissionVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PermissionVC.xib; sourceTree = "<group>"; };
 		27E27525238E77F000A60FB1 /* PHAssetExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PHAssetExtensions.swift; sourceTree = "<group>"; };
 		27E27527238E9F1B00A60FB1 /* PermissionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionVC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -150,6 +152,7 @@
 				27147640238D1AF800F3E3E3 /* MenuController.swift */,
 				27147647238D1FB100F3E3E3 /* AlbumModel.swift */,
 				27E27525238E77F000A60FB1 /* PHAssetExtensions.swift */,
+				27E27527238E9F1B00A60FB1 /* PermissionVC.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -163,7 +166,6 @@
 				01DD8B551E2B5DED0081B1FC /* AppDelegate.swift */,
 				01DD8B561E2B5DED0081B1FC /* Info.plist */,
 				01DD8B571E2B5DED0081B1FC /* ViewController.swift */,
-				27E27527238E9F1B00A60FB1 /* PermissionVC.swift */,
 			);
 			path = SupportingFiles;
 			sourceTree = "<group>";
@@ -173,6 +175,7 @@
 			children = (
 				27147643238D1B8D00F3E3E3 /* MenuCell.xib */,
 				27147645238D1C7D00F3E3E3 /* MenuCell.swift */,
+				27A8052D238FCBD500C08B70 /* PermissionVC.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -266,6 +269,7 @@
 			files = (
 				01DD8B621E2B5E010081B1FC /* Main.storyboard in Resources */,
 				01DD8B611E2B5E010081B1FC /* LaunchScreen.storyboard in Resources */,
+				27A8052E238FCBD500C08B70 /* PermissionVC.xib in Resources */,
 				27147644238D1B8D00F3E3E3 /* MenuCell.xib in Resources */,
 				01DD8B5C1E2B5DF50081B1FC /* Assets.xcassets in Resources */,
 			);
@@ -480,7 +484,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = LS769UVZMZ;
 				INFOPLIST_FILE = "$(SRCROOT)/OpalImagePicker/SupportingFiles/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = OpalImagePicker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -497,7 +501,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = LS769UVZMZ;
 				INFOPLIST_FILE = "$(SRCROOT)/OpalImagePicker/SupportingFiles/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = OpalImagePicker;
 				PRODUCT_NAME = "$(TARGET_NAME)";

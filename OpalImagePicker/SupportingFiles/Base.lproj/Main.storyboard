@@ -71,49 +71,6 @@
             </objects>
             <point key="canvasLocation" x="1047.8260869565217" y="75"/>
         </scene>
-        <!--PermissionVC-->
-        <scene sceneID="k2o-It-nUE">
-            <objects>
-                <viewController storyboardIdentifier="Permission" id="hKn-7J-ECx" customClass="PermissionVC" customModule="OpalImagePicker" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="zao-QI-bUs"/>
-                        <viewControllerLayoutGuide type="bottom" id="wcc-7B-8ZR"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="PSB-r7-Fa9">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please Allow Photo Access" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ycc-el-94M">
-                                <rect key="frame" x="28" y="417.5" width="358" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AVD-Gl-Vcq">
-                                <rect key="frame" x="28" y="450.5" width="358" height="30"/>
-                                <state key="normal" title="Open Settings"/>
-                                <connections>
-                                    <action selector="settingsBtnAct:" destination="hKn-7J-ECx" eventType="touchUpInside" id="fu7-sg-2VE"/>
-                                </connections>
-                            </button>
-                        </subviews>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                        <constraints>
-                            <constraint firstItem="AVD-Gl-Vcq" firstAttribute="top" secondItem="ycc-el-94M" secondAttribute="bottom" constant="12" id="Hsa-Ho-2Sk"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="ycc-el-94M" secondAttribute="trailing" constant="8" id="JeB-1J-ydI"/>
-                            <constraint firstItem="ycc-el-94M" firstAttribute="centerY" secondItem="PSB-r7-Fa9" secondAttribute="centerY" constant="-20" id="Kl1-9J-c2m"/>
-                            <constraint firstItem="ycc-el-94M" firstAttribute="centerX" secondItem="PSB-r7-Fa9" secondAttribute="centerX" id="TAN-kz-x0T"/>
-                            <constraint firstItem="AVD-Gl-Vcq" firstAttribute="leading" secondItem="ycc-el-94M" secondAttribute="leading" id="Yvg-55-JGh"/>
-                            <constraint firstItem="AVD-Gl-Vcq" firstAttribute="trailing" secondItem="ycc-el-94M" secondAttribute="trailing" id="cfU-be-Z0Z"/>
-                            <constraint firstItem="ycc-el-94M" firstAttribute="leading" secondItem="PSB-r7-Fa9" secondAttribute="leadingMargin" constant="8" id="u9N-b0-krl"/>
-                        </constraints>
-                    </view>
-                    <navigationItem key="navigationItem" id="cDZ-S3-uD5"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="G5j-AP-UMe" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1780" y="75"/>
-        </scene>
         <!--Navigation Controller-->
         <scene sceneID="ag2-6D-Dcm">
             <objects>
