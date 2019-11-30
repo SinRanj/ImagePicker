@@ -246,6 +246,30 @@ open class OpalImagePickerController: UINavigationController {
         }
     }
     
+    open var permissionColor:UIColor? {
+        didSet {
+            let rootVC = viewControllers.first as? OpalImagePickerRootViewController
+            rootVC?.permissionColor = permissionColor
+        }
+    }
+    open var permissionText:String? {
+        didSet {
+            let rootVC = viewControllers.first as? OpalImagePickerRootViewController
+            rootVC?.permissionText = permissionText
+        }
+    }
+    open var settingText:String? {
+        didSet {
+            let rootVC = viewControllers.first as? OpalImagePickerRootViewController
+            rootVC?.settingText = settingText
+        }
+    }
+    open var settingColor:UIColor? {
+        didSet {
+            let rootVC = viewControllers.first as? OpalImagePickerRootViewController
+            rootVC?.settingColor = settingColor
+        }
+    }
     /// Initializer
     public required init() {
         super.init(rootViewController: OpalImagePickerRootViewController())

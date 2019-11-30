@@ -104,6 +104,62 @@ class OpalImageViewPicker: UIView,OpalImagePickerControllerDelegate{
             initializer()
         }
     }
+
+    @IBInspectable var _permissionText: String? {
+        get {
+          return "Please Allow Photo Access"
+        }set {
+          self.imagePicker.permissionText = newValue
+        }
+    }
+    
+    var permissionText:String? = "Please Allow Photo Access" {
+        didSet{
+            initializer()
+        }
+    }
+    
+    @IBInspectable var _permissionColor: UIColor? {
+        get {
+          return UIColor(cgColor: self.layer.borderColor!)
+        }set {
+          self.imagePicker.permissionColor = newValue
+        }
+    }
+    
+    var permissionColor:UIColor? {
+        didSet{
+            initializer()
+        }
+    }
+    
+    @IBInspectable var _settingColor: UIColor? {
+        get {
+          return UIColor(cgColor: self.layer.borderColor!)
+        }set {
+          self.imagePicker.settingColor = newValue
+        }
+    }
+    
+    var settingColor:UIColor? {
+        didSet{
+            initializer()
+        }
+    }
+    
+    @IBInspectable var _settingText: String? {
+        get {
+          return "Open Settings"
+        }set {
+          self.imagePicker.settingText = newValue
+        }
+    }
+    
+    var settingText:String? = "Open Settings" {
+        didSet{
+            initializer()
+        }
+    }
     
     private var root:OpalImagePickerRootViewController!
     
@@ -159,7 +215,6 @@ class OpalImageViewPicker: UIView,OpalImagePickerControllerDelegate{
         imagePicker.navigationColor = navigationColor
         imagePicker.titleColor = titleColor
         imagePicker.navigatioButtonColor = navigationButtonColor
-        
     }
     
     // MARK: Constraints

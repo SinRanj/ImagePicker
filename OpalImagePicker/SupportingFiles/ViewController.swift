@@ -25,7 +25,6 @@ class ViewController: UIViewController,OpalImagePickerControllerDelegate {
         pickerView.viewBackgroundColor = UIColor.black
         pickerView.titleColor = UIColor.white
         pickerView.navigationButtonColor = UIColor.white
-        
         let doneButton = UIBarButtonItem(title: "Select", style: .done, target: self, action: #selector(selectionTapped))
         navigationItem.rightBarButtonItem = doneButton
     }
@@ -33,6 +32,10 @@ class ViewController: UIViewController,OpalImagePickerControllerDelegate {
     @objc func selectionTapped(){
         let imagePicker = OpalImagePickerController()
 //        let items = [UIImage(named: "slide_up")!,UIImage(named: "double_slide_up")!]
+        imagePicker.permissionColor = UIColor.white
+        imagePicker.permissionText = "Please Allow Photo Access *"
+        imagePicker.settingText = "Open Settings *"
+        imagePicker.settingColor = UIColor.green
         pickerView.openModally(imagePicker: imagePicker, isExternal: false, items: nil, externalTitle: "External")
     }
     

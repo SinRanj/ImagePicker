@@ -167,6 +167,14 @@ open class OpalImagePickerRootViewController: UIViewController,MenuDelegate {
     
     var doneButtonText:String? = "Done"
     var cancelButtonText:String? = "Cancel"
+    
+    var permissionText:String? = "Please Allow Photo Access"
+    var settingText:String? = "Open Settings"
+    var settingColor:UIColor? = UIColor.black
+    var permissionColor:UIColor? = UIColor.black
+    
+    @IBOutlet weak var settingsBtn: UIButton!
+    @IBOutlet weak var permissionLbl: UILabel!
     /// Initializer
     public required init() {
         super.init(nibName: nil, bundle: nil)
@@ -181,7 +189,7 @@ open class OpalImagePickerRootViewController: UIViewController,MenuDelegate {
         guard let view = view else { return }
         fetchPhotos()
         navigationController?.navigationBar.barTintColor = navigationColor
-        navigationItem.rightBarButtonItem?.tintColor = .white
+        
         
         let collectionView = UICollectionView(frame: view.frame, collectionViewLayout: OpalImagePickerCollectionViewLayout())
         
@@ -378,11 +386,9 @@ open class OpalImagePickerRootViewController: UIViewController,MenuDelegate {
     }
     
     private func addImageToLabel(text:String,label: UILabel, image:UIImage){
-        //Create Attachment
         let imageAttachment =  NSTextAttachment()
         let im = image.withRenderingMode(UIImage.RenderingMode.alwaysTemplate)
         imageAttachment.image = im
-        //Set bound to reposition
         let imageOffsetY:CGFloat = -5.0
         imageAttachment.bounds = CGRect(x: -2, y: imageOffsetY, width: imageAttachment.image!.size.width, height: imageAttachment.image!.size.height)
         let attachmentString = NSAttributedString(attachment: imageAttachment)
@@ -397,8 +403,28 @@ open class OpalImagePickerRootViewController: UIViewController,MenuDelegate {
     
     private func loadPermissionVC(){
         guard let permissionVC = Bundle.main.loadNibNamed("PermissionVC", owner: self, options: nil)?[0] as? PermissionVC else { return }
-        self.present(permissionVC, animated: true, completion: nil)
+        self.addChild(permissionVC)
+        permissionVC.view.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
+        permissionVC.view.backgroundColor = self.view.backgroundColor
+        self.view.addSubview(permissionVC.view)
+        permissionVC.didMove(toParent: self)
+        
+        permissionLbl.text = permissionText
+        permissionLbl.textColor = permissionColor
+        settingsBtn.setTitle(settingText, for: UIControl.State.normal)
+        settingsBtn.setTitleColor(settingColor, for: UIControl.State.normal)
     }
+    
+    @IBAction func settingsBtnAct(_ sender: Any) {
+        let settingsAppURL = URL(string:"App-Prefs:root=OpalImagePicker")
+        if #available(iOS 10.0, *) {
+            UIApplication.shared.open(settingsAppURL!, options: [:], completionHandler: nil)
+        } else {
+            UIApplication.shared.openURL(settingsAppURL!)
+        }
+
+    }
+    
     private func loadPhotoAsset(asset:PHAsset?)->UIImage? {
         let options = PHImageRequestOptions()
         options.deliveryMode = .highQualityFormat
