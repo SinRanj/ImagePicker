@@ -21,6 +21,15 @@ import Photos
     ///   - images: the array of `UIImage`
     @objc optional func imagePicker(_ picker: OpalImagePickerController, didFinishPickingImages images: [UIImage])
     
+    /// Image Picker did finish picking external images. Provides an array of `UIImage` selected
+    /// Consider using setting `maximumSelectionsAllowed` when using this delegate method
+    /// because several `UIImage` objects are stored in memory when you implement this delegate function.
+    ///
+    /// - Parameters:
+    ///   - picker: the `OpalImagePickerController`
+    ///   - images: the array of `UIImage`
+    @objc optional func imagePicker(_ picker: OpalImagePickerController, didFinishPickingExternalImages images: [UIImage])
+    
     /// Image Picker did finish picking images. Provides an array of `PHAsset` selected.
     ///
     /// - Parameters:
@@ -171,6 +180,27 @@ open class OpalImagePickerController: UINavigationController {
             let rootVC = viewControllers.first as? OpalImagePickerRootViewController
             rootVC?.toolbar.tintColor = externalToolbarTintColor
             rootVC?.tabSegmentedControl.tintColor = externalToolbarTintColor
+        }
+    }
+    
+    open var isExternal:Bool = false {
+        didSet {
+            let rootVC = viewControllers.first as? OpalImagePickerRootViewController
+            rootVC?.isExternal = isExternal
+        }
+    }
+    
+    open var externalItems:[UIImage]?  {
+        didSet {
+            let rootVC = viewControllers.first as? OpalImagePickerRootViewController
+            rootVC?.externalItems = externalItems
+        }
+    }
+    
+    open var externalTitle:String? {
+        didSet {
+            let rootVC = viewControllers.first as? OpalImagePickerRootViewController
+            rootVC?.externalTitle = externalTitle
         }
     }
     

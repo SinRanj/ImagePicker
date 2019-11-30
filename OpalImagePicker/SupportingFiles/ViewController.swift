@@ -25,11 +25,19 @@ class ViewController: UIViewController,OpalImagePickerControllerDelegate {
     }
     
     @objc func selectionTapped(){
-        pickerView.openModally()
+        let imagePicker = OpalImagePickerController()
+        let items = [UIImage(named: "slide_up")!,UIImage(named: "double_slide_up")!]
+        pickerView.openModally(imagePicker: imagePicker, isExternal: false`, items: items)
     }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    
+    func imagePicker(_ picker: OpalImagePickerController, didFinishPickingExternalImages images: [UIImage]) {
+        
     }
     func imagePicker(_ picker: OpalImagePickerController, didFinishPickingImages images: [UIImage]) {
         switch images.count {

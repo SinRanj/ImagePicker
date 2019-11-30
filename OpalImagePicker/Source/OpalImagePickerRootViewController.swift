@@ -101,6 +101,11 @@ open class OpalImagePickerRootViewController: UIViewController,MenuDelegate {
     open var totalCacheLimit = 128000000 //128 MB
     /// Number of assets cache (100 assets by default)
     open var cacheCountLimit = 100 // 100 images
+    
+    open var isExternal = false
+    open var externalTitle:String? = "External"
+    open var externalItems:[UIImage]?
+    
     var photoAssets: PHFetchResult<PHAsset> = PHFetchResult()
     weak var doneButton: UIBarButtonItem?
     weak var cancelButton: UIBarButtonItem?
@@ -145,12 +150,14 @@ open class OpalImagePickerRootViewController: UIViewController,MenuDelegate {
     }()
     
     private var selectedCollection : PHAssetCollection!
-    public var shouldSelectAlbumes:Bool = false
+    
+    
     var menu : Menu!
     private var titleView:UILabel!
     private var items:[menuItem]!
     private var albumModel:[AlbumModel]!
     private var status:Bool?
+    
     fileprivate weak var rightExternalCollectionViewConstraint: NSLayoutConstraint?
     
     /// Initializer
@@ -242,7 +249,10 @@ open class OpalImagePickerRootViewController: UIViewController,MenuDelegate {
             fetchOptions.fetchLimit = pageSize
         }
         if selectedCollection == nil {
-            photoAssets = PHAsset.fetchAssets(with: fetchOptions)
+            if !isExternal {
+                photoAssets = PHAsset.fetchAssets(with: fetchOptions)
+            }
+            
         }
         else {
             photoAssets = PHAsset.fetchAssets(in: selectedCollection as! PHAssetCollection, options: fetchOptions)
@@ -323,16 +333,19 @@ open class OpalImagePickerRootViewController: UIViewController,MenuDelegate {
                 break;
             }
         }
-        
-        titleView = UILabel()
-        titleView.text = configuration?.navigationTitle ?? NSLocalizedString("Recents", comment: "")
-        titleView.textAlignment = .center
-        titleView.frame = CGRect(origin:CGPoint.zero, size:CGSize(width: 500, height: 500))
-        self.navigationItem.titleView = titleView
-        
-        let recognizer = UITapGestureRecognizer(target: self, action: #selector(titleTapped))
-        titleView.isUserInteractionEnabled = true
-        titleView.addGestureRecognizer(recognizer)
+        if isExternal {
+            title = externalTitle
+        }
+        else {
+            titleView = UILabel()
+            titleView.text = configuration?.navigationTitle ?? NSLocalizedString("Recents", comment: "")
+            titleView.textAlignment = .center
+            titleView.frame = CGRect(origin:CGPoint.zero, size:CGSize(width: 500, height: 500))
+            self.navigationItem.titleView = titleView
+            let recognizer = UITapGestureRecognizer(target: self, action: #selector(titleTapped))
+            titleView.isUserInteractionEnabled = true
+            titleView.addGestureRecognizer(recognizer)
+        }
         
         //        navigationItem.title = configuration?.navigationTitle ?? NSLocalizedString("Photos", comment: "")
         
@@ -388,42 +401,49 @@ open class OpalImagePickerRootViewController: UIViewController,MenuDelegate {
         
         let indexPathsForSelectedItems = selectedIndexPaths
         let externalIndexPaths = externalSelectedIndexPaths
-        //        guard indexPathsForSelectedItems.count + externalIndexPaths.count > 0 else {
-        //            cancelTapped()
-        //            return
-        //        }
-        //
-        var photoAssets: [PHAsset] = []
-        for indexPath in indexPathsForSelectedItems {
-            guard indexPath.item < self.photoAssets.count else { continue }
-            photoAssets += [self.photoAssets.object(at: indexPath.item)]
-        }
-        delegate?.imagePicker?(imagePicker, didFinishPickingAssets: photoAssets)
         
-        var selectedURLs: [URL] = []
-        for indexPath in externalIndexPaths {
-            guard let url = delegate?.imagePicker?(imagePicker, imageURLforExternalItemAtIndex: indexPath.item) else { continue }
-            selectedURLs += [url]
+        if !isExternal {
+            var photoAssets: [PHAsset] = []
+                  for indexPath in indexPathsForSelectedItems {
+                      guard indexPath.item < self.photoAssets.count else { continue }
+                      photoAssets += [self.photoAssets.object(at: indexPath.item)]
+                  }
+                  delegate?.imagePicker?(imagePicker, didFinishPickingAssets: photoAssets)
+                  
+                  var selectedURLs: [URL] = []
+                  for indexPath in externalIndexPaths {
+                      guard let url = delegate?.imagePicker?(imagePicker, imageURLforExternalItemAtIndex: indexPath.item) else { continue }
+                      selectedURLs += [url]
+                  }
+                  delegate?.imagePicker?(imagePicker, didFinishPickingExternalURLs: selectedURLs)
+                  
+                  guard shouldExpandImagesFromAssets() else { return }
+                  let manager = PHImageManager.default()
+                  let options = PHImageRequestOptions()
+                  options.deliveryMode = .highQualityFormat
+                  options.isSynchronous = true
+                  options.isNetworkAccessAllowed = true
+                  
+                  for asset in photoAssets {
+                      manager.requestImageData(for: asset, options: options, resultHandler: { [weak self] (data, _, _, _) in
+                          guard let strongSelf = self,
+                              let data = data,
+                              let image = UIImage(data: data) else { return }
+                          strongSelf.savedImages += [image]
+                      })
+                  }
+                  delegate?.imagePicker?(imagePicker, didFinishPickingImages: savedImages)
+                  savedImages = []
         }
-        delegate?.imagePicker?(imagePicker, didFinishPickingExternalURLs: selectedURLs)
-        
-        guard shouldExpandImagesFromAssets() else { return }
-        let manager = PHImageManager.default()
-        let options = PHImageRequestOptions()
-        options.deliveryMode = .highQualityFormat
-        options.isSynchronous = true
-        options.isNetworkAccessAllowed = true
-        
-        for asset in photoAssets {
-            manager.requestImageData(for: asset, options: options, resultHandler: { [weak self] (data, _, _, _) in
-                guard let strongSelf = self,
-                    let data = data,
-                    let image = UIImage(data: data) else { return }
-                strongSelf.savedImages += [image]
-            })
+        else {
+            var photos: [UIImage] = []
+            for indexPath in indexPathsForSelectedItems {
+                guard indexPath.item < self.externalItems!.count else { continue }
+                photos += [self.externalItems![indexPath.item]]
+            }
+
+            delegate?.imagePicker?(imagePicker, didFinishPickingExternalImages: photos)
         }
-        delegate?.imagePicker?(imagePicker, didFinishPickingImages: savedImages)
-        savedImages = []
         dismiss(animated: true, completion: nil)
     }
     
@@ -661,9 +681,15 @@ extension OpalImagePickerRootViewController: UICollectionViewDataSource {
         
         guard let layoutAttributes = collectionView.collectionViewLayout.layoutAttributesForItem(at: indexPath),
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImagePickerCollectionViewCell.reuseId, for: indexPath) as? ImagePickerCollectionViewCell else { return UICollectionViewCell() }
-        let photoAsset = photoAssets.object(at: indexPath.item)
-        cell.indexPath = indexPath
-        cell.photoAsset = photoAsset
+        if isExternal{
+//            cell.externalPhoto = externalItems![indexPath.item]
+            cell.imageView.image = externalItems![indexPath.item]
+        }
+        else {
+            let photoAsset = photoAssets.object(at: indexPath.item)
+            cell.photoAsset = photoAsset
+            cell.indexPath = indexPath
+        }
         cell.size = layoutAttributes.frame.size
         
         if let selectionTintColor = self.selectionTintColor {
@@ -721,7 +747,13 @@ extension OpalImagePickerRootViewController: UICollectionViewDataSource {
     /// - Returns: Returns an `Int` for the number of rows.
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == self.collectionView {
-            return photoAssets.count
+            if isExternal {
+                return externalItems?.count ?? 0
+            }
+            else {
+                return photoAssets.count
+            }
+            
         } else if let imagePicker = navigationController as? OpalImagePickerController,
             let numberOfItems = delegate?.imagePickerNumberOfExternalItems?(imagePicker) {
             return numberOfItems

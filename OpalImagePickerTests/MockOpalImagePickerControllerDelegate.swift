@@ -20,6 +20,7 @@ class MockOpalImagePickerControllerDelegate: OpalImagePickerControllerDelegate {
         
     }
     
+    
     func imagePicker(_ picker: OpalImagePickerController, didFinishPickingAssets assets: [PHAsset]) {
         isDidFinishPickingAssetsCalled = true
     }

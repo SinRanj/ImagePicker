@@ -89,12 +89,14 @@ class OpalImageViewPicker: UIView,OpalImagePickerControllerDelegate{
         imagePicker.viewControllers[0].didMove(toParent: parent!)
         
     }
-    func openModally() {
-        let imagePicker = OpalImagePickerController()
+    func openModally(imagePicker:OpalImagePickerController, isExternal:Bool = false, items:[UIImage]?) {
         imagePicker.imagePickerDelegate = self
         imagePicker.selectionImage = selectionImage
         imagePicker.doubleSelectionImage = doubleSelectionImage
         configurations(imagePicker: imagePicker)
+        
+        imagePicker.isExternal = isExternal
+        imagePicker.externalItems = items
         parentViewController?.present(imagePicker, animated: true, completion: nil)
     }
     
@@ -118,10 +120,14 @@ class OpalImageViewPicker: UIView,OpalImagePickerControllerDelegate{
         NSLayoutConstraint(item: imagePickerView, attribute: NSLayoutConstraint.Attribute.height, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self, attribute: NSLayoutConstraint.Attribute.height, multiplier: 1, constant: 0).isActive = true
         
     }
+    func imagePicker(_ picker: OpalImagePickerController, didFinishPickingExternalImages images: [UIImage]) {
+        delegate?.imagePicker?(picker, didFinishPickingExternalImages: images)
+    }
     func imagePicker(_ picker: OpalImagePickerController, didFinishPickingImages images: [UIImage]) {
         if picker == imagePicker{
             delegate?.imagePicker?(picker, didFinishPickingImages: images)
         }    }
+    
     func imagePicker(_ picker: OpalImagePickerController, didFinishPickingAssets assets: [PHAsset]) {
         if picker != imagePicker {
             if assets.count != 0 {

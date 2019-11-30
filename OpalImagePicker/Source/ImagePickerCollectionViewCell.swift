@@ -20,6 +20,12 @@ class ImagePickerCollectionViewCell: UICollectionViewCell {
         }
     }
     
+    var externalPhoto: UIImage? {
+        didSet {
+            loadExternalPhotoIfNeeded()
+        }
+    }
+    
     var size: CGSize? {
         didSet {
             loadPhotoAssetIfNeeded()
@@ -181,6 +187,13 @@ class ImagePickerCollectionViewCell: UICollectionViewCell {
         //Remove selection
         setSelected(false, animated: false)
     }
+    
+    private func loadExternalPhotoIfNeeded() {
+        guard let photo = externalPhoto else { return }
+        
+        self.imageView.image = photo
+    }
+
     
     private func loadPhotoAssetIfNeeded() {
         guard let indexPath = self.indexPath,
