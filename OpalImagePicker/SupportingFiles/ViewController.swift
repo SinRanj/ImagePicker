@@ -19,14 +19,14 @@ class ViewController: UIViewController,OpalImagePickerControllerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         pickerView.delegate = self
-        pickerView.maximumSelectionsAllowed = 2
-        pickerView.shouldResetItems = true
-//        pickerView.selectionImage = UIImage(named: "slide_up")
-//        pickerView.doubleSelectionImage = UIImage(named: "double_slide_up")
-        pickerView.allowedMediaTypes = Set([PHAssetMediaType.image])
         
+        let doneButton = UIBarButtonItem(title: "Select", style: .done, target: self, action: #selector(selectionTapped))
+        navigationItem.rightBarButtonItem = doneButton
     }
-
+    
+    @objc func selectionTapped(){
+        pickerView.openModally()
+    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.

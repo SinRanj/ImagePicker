@@ -16,36 +16,45 @@ class OpalImageViewPicker: UIView,OpalImagePickerControllerDelegate{
             initializer()
         }
     }
-    
-    var maximumSelectionsAllowed:Int! = 5 {
+    /// Maximum photo selections allowed in picker (zero or fewer means unlimited).
+    var maximumSelectionsAllowed:Int! = 2 {
         didSet {
             initializer()
         }
     }
-    
+    /// Allowed Media Types that can be fetched. See `PHAssetMediaType`
     var allowedMediaTypes: Set<PHAssetMediaType>? = Set([PHAssetMediaType.image])  {
         didSet {
             initializer()
         }
     }
-    var shouldResetItems:Bool = false {
+    /// Checks if selected items should resets after `maximumSelectionsAllowed` reached.
+    var shouldResetItems:Bool = true {
         didSet{
             initializer()
         }
     }
-    
+    /// Custom first selected image (slide_up).
     var selectionImage:UIImage! = UIImage(named: "slide_up") {
         didSet{
             initializer()
         }
     }
+    /// Custom second selected image (double_slide_up).
     var doubleSelectionImage:UIImage! = UIImage(named: "double_slide_up") {
         didSet{
             initializer()
         }
     }
     
-    var selectionButtonTitle:String = "Select" {
+    /// Limitation on memory cache (128 MB by default)
+    var totalCacheLimit = 128000000 {
+        didSet{
+            initializer()
+        }
+    }
+    /// Number of assets cache (100 assets by default)
+    var cacheCountLimit = 100 {
         didSet{
             initializer()
         }
@@ -66,11 +75,6 @@ class OpalImageViewPicker: UIView,OpalImagePickerControllerDelegate{
     
     private func initializer(){
         root = imagePicker.viewControllers[0] as? OpalImagePickerRootViewController
-//        let status = root.requestPhotoAccessIfNeeded(PHPhotoLibrary.authorizationStatus())
-//        if !status {
-//            let permissionVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "Permission")
-//            parentViewController?.present(permissionVC, animated: true, completion: nil)
-//        }
 
         imagePicker.imagePickerDelegate = self
         let parent = self.parentViewController
@@ -84,14 +88,8 @@ class OpalImageViewPicker: UIView,OpalImagePickerControllerDelegate{
         
         imagePicker.viewControllers[0].didMove(toParent: parent!)
         
-        navigationSelection()
     }
-    
-    private func navigationSelection(){
-        let doneButton = UIBarButtonItem(title: selectionButtonTitle, style: .done, target: self, action: #selector(selectionTapped))
-        parentViewController?.navigationItem.rightBarButtonItem = doneButton
-    }
-    @objc func selectionTapped() {
+    func openModally() {
         let imagePicker = OpalImagePickerController()
         imagePicker.imagePickerDelegate = self
         imagePicker.selectionImage = selectionImage
@@ -107,6 +105,8 @@ class OpalImageViewPicker: UIView,OpalImagePickerControllerDelegate{
         root.shouldResetItems = shouldResetItems
         imagePicker.selectionImage = selectionImage
         imagePicker.doubleSelectionImage = doubleSelectionImage
+        root.cacheCountLimit = cacheCountLimit
+        root.totalCacheLimit = totalCacheLimit
     }
     
     // MARK: Constraints

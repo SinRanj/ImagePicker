@@ -97,6 +97,10 @@ open class OpalImagePickerRootViewController: UIViewController,MenuDelegate {
     /// Page size for paging through the Photo Assets in the Photo Library. Defaults to 100. Must override to change this value. Only works in iOS 9.0+
     public let pageSize = 10000
     
+    /// Limitation on memory cache (128 MB by default)
+    open var totalCacheLimit = 128000000 //128 MB
+    /// Number of assets cache (100 assets by default)
+    open var cacheCountLimit = 100 // 100 images
     var photoAssets: PHFetchResult<PHAsset> = PHFetchResult()
     weak var doneButton: UIBarButtonItem?
     weak var cancelButton: UIBarButtonItem?
@@ -135,8 +139,8 @@ open class OpalImagePickerRootViewController: UIViewController,MenuDelegate {
     
     private lazy var cache: NSCache<NSIndexPath, NSData> = {
         let cache = NSCache<NSIndexPath, NSData>()
-        cache.totalCostLimit = 128000000 //128 MB
-        cache.countLimit = 100 // 100 images
+        cache.totalCostLimit = totalCacheLimit
+        cache.countLimit = cacheCountLimit
         return cache
     }()
     
