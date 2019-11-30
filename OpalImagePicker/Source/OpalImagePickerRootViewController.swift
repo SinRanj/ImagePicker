@@ -160,6 +160,13 @@ open class OpalImagePickerRootViewController: UIViewController,MenuDelegate {
     
     fileprivate weak var rightExternalCollectionViewConstraint: NSLayoutConstraint?
     
+    var navigationColor:UIColor? = UIColor.white
+    var backgroundColor:UIColor? = UIColor.white
+    var titleColor:UIColor? = UIColor.black
+    var navigatioButtonColor:UIColor? = UIColor.blue
+    
+    var doneButtonText:String? = "Done"
+    var cancelButtonText:String? = "Cancel"
     /// Initializer
     public required init() {
         super.init(nibName: nil, bundle: nil)
@@ -173,11 +180,16 @@ open class OpalImagePickerRootViewController: UIViewController,MenuDelegate {
     private func setup() {
         guard let view = view else { return }
         fetchPhotos()
+        navigationController?.navigationBar.barTintColor = navigationColor
+        navigationItem.rightBarButtonItem?.tintColor = .white
         
         let collectionView = UICollectionView(frame: view.frame, collectionViewLayout: OpalImagePickerCollectionViewLayout())
+        
+        
         setup(collectionView: collectionView)
         view.addSubview(collectionView)
         self.collectionView = collectionView
+        self.collectionView!.backgroundColor = backgroundColor
         
         var constraints: [NSLayoutConstraint] = []
         if shouldShowTabs {
@@ -290,57 +302,59 @@ open class OpalImagePickerRootViewController: UIViewController,MenuDelegate {
     open override func viewDidLoad() {
         super.viewDidLoad()
         setup()
-        
-        albumModel = [AlbumModel]()
-        PHPhotoLibrary.requestAuthorization { (status) in
-            switch status {
-            case .authorized:
-                DispatchQueue.main.async {
-                    let userCollections = PHCollectionList.fetchTopLevelUserCollections(with: nil)
-                    self.albumModel.append(AlbumModel(colection: nil, index: nil))
-                    userCollections.enumerateObjects { (collection, id, pointer) in
-                        self.albumModel.append(AlbumModel(colection: collection, index: id))
-                    }
-                    self.items = [menuItem]()
-                    for i in self.albumModel {
-                        if i.colection == nil {
-                            let images = PHAsset.fetchAssets(with: self.fetchOptions)
-                            self.items.append(menuItem(title: "Recents", image: self.loadPhotoAsset(asset: images.firstObject!), description: "\(images.count)", id: i.index))
-                        }
-                        else {
-                            let images = PHAsset.fetchAssets(in: i.colection as! PHAssetCollection, options: self.fetchOptions)
-                            
-                            self.items.append(menuItem(title: i.colection!.localizedTitle, image: self.loadPhotoAsset(asset: images.firstObject), description: "\(images.count)", id: i.index))
-                        }
-                        
-                    }
-                    self.menu = Menu(viewController: self,items:self.items)
-                    self.menu.delegate = self
-                }
-            case .notDetermined:
-                DispatchQueue.main.async {
-                    self.loadPermissionVC()
-                }
-            case .restricted:
-                DispatchQueue.main.async {
-                    self.loadPermissionVC()
-                }
-            case .denied:
-                DispatchQueue.main.async {
-                    self.loadPermissionVC()
-                }
-            @unknown default:
-                break;
-            }
-        }
+
         if isExternal {
             title = externalTitle
         }
         else {
+            albumModel = [AlbumModel]()
+            PHPhotoLibrary.requestAuthorization { (status) in
+                switch status {
+                case .authorized:
+                    DispatchQueue.main.async {
+                        let userCollections = PHCollectionList.fetchTopLevelUserCollections(with: nil)
+                        self.albumModel.append(AlbumModel(colection: nil, index: nil))
+                        userCollections.enumerateObjects { (collection, id, pointer) in
+                            self.albumModel.append(AlbumModel(colection: collection, index: id))
+                        }
+                        self.items = [menuItem]()
+                        for i in self.albumModel {
+                            if i.colection == nil {
+                                let images = PHAsset.fetchAssets(with: self.fetchOptions)
+                                self.items.append(menuItem(title: "Recents", image: self.loadPhotoAsset(asset: images.firstObject!), description: "\(images.count)", id: i.index))
+                            }
+                            else {
+                                let images = PHAsset.fetchAssets(in: i.colection as! PHAssetCollection, options: self.fetchOptions)
+                                
+                                self.items.append(menuItem(title: i.colection!.localizedTitle, image: self.loadPhotoAsset(asset: images.firstObject), description: "\(images.count)", id: i.index))
+                            }
+                            
+                        }
+                        self.menu = Menu(viewController: self,items:self.items,backgroundColor: self.backgroundColor,textColor: self.titleColor)
+                        self.menu.delegate = self
+                    }
+                case .notDetermined:
+                    DispatchQueue.main.async {
+                        self.loadPermissionVC()
+                    }
+                case .restricted:
+                    DispatchQueue.main.async {
+                        self.loadPermissionVC()
+                    }
+                case .denied:
+                    DispatchQueue.main.async {
+                        self.loadPermissionVC()
+                    }
+                @unknown default:
+                    break;
+                }
+            }
+            
             titleView = UILabel()
             titleView.text = configuration?.navigationTitle ?? NSLocalizedString("Recents", comment: "")
             titleView.textAlignment = .center
             titleView.frame = CGRect(origin:CGPoint.zero, size:CGSize(width: 500, height: 500))
+            addImageToLabel(text: "Recents", label: titleView, image: UIImage(named: "down_arrow")!)
             self.navigationItem.titleView = titleView
             let recognizer = UITapGestureRecognizer(target: self, action: #selector(titleTapped))
             titleView.isUserInteractionEnabled = true
@@ -349,16 +363,38 @@ open class OpalImagePickerRootViewController: UIViewController,MenuDelegate {
         
         //        navigationItem.title = configuration?.navigationTitle ?? NSLocalizedString("Photos", comment: "")
         
-        let cancelButtonTitle = configuration?.cancelButtonTitle ?? NSLocalizedString("Cancel", comment: "")
+        let cancelButtonTitle = cancelButtonText ?? NSLocalizedString("Cancel", comment: "")
         let cancelButton = UIBarButtonItem(title: cancelButtonTitle, style: .plain, target: self, action: #selector(cancelTapped))
         navigationItem.leftBarButtonItem = cancelButton
         self.cancelButton = cancelButton
         
-        let doneButtonTitle = configuration?.doneButtonTitle ?? NSLocalizedString("Done", comment: "")
+        let doneButtonTitle = doneButtonText ?? NSLocalizedString("Done", comment: "")
         let doneButton = UIBarButtonItem(title: doneButtonTitle, style: .done, target: self, action: #selector(doneTapped))
+        doneButton.tintColor = navigatioButtonColor
+        cancelButton.tintColor = navigatioButtonColor
+        
         navigationItem.rightBarButtonItem = doneButton
         self.doneButton = doneButton
     }
+    
+    private func addImageToLabel(text:String,label: UILabel, image:UIImage){
+        //Create Attachment
+        let imageAttachment =  NSTextAttachment()
+        let im = image.withRenderingMode(UIImage.RenderingMode.alwaysTemplate)
+        imageAttachment.image = im
+        //Set bound to reposition
+        let imageOffsetY:CGFloat = -5.0
+        imageAttachment.bounds = CGRect(x: -2, y: imageOffsetY, width: imageAttachment.image!.size.width, height: imageAttachment.image!.size.height)
+        let attachmentString = NSAttributedString(attachment: imageAttachment)
+        let completeText = NSMutableAttributedString(string: "")
+        completeText.append(attachmentString)
+        let  textAfterIcon = NSMutableAttributedString(string: text)
+        completeText.append(textAfterIcon)
+        label.textAlignment = .center
+        label.textColor = titleColor
+        label.attributedText = completeText
+    }
+    
     private func loadPermissionVC(){
         guard let permissionVC = Bundle.main.loadNibNamed("PermissionVC", owner: self, options: nil)?[0] as? PermissionVC else { return }
         self.present(permissionVC, animated: true, completion: nil)
@@ -381,13 +417,15 @@ open class OpalImagePickerRootViewController: UIViewController,MenuDelegate {
         return _image
     }
     func didSelectItem(index: Int, title: String) {
-        titleView.text = title
+        addImageToLabel(text: title, label: titleView, image: UIImage(named: "down_arrow")!)
         selectedCollection = albumModel[index].colection as? PHAssetCollection
         fetchPhotos()
         menu.show()
     }
     @objc func titleTapped(){
-        menu.show()
+        if menu != nil {
+            menu.show()
+        }    
     }
     @objc func cancelTapped() {
         dismiss(animated: true) { [weak self] in
@@ -682,7 +720,6 @@ extension OpalImagePickerRootViewController: UICollectionViewDataSource {
         guard let layoutAttributes = collectionView.collectionViewLayout.layoutAttributesForItem(at: indexPath),
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImagePickerCollectionViewCell.reuseId, for: indexPath) as? ImagePickerCollectionViewCell else { return UICollectionViewCell() }
         if isExternal{
-//            cell.externalPhoto = externalItems![indexPath.item]
             cell.imageView.image = externalItems![indexPath.item]
         }
         else {

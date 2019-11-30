@@ -39,6 +39,9 @@ class Menu:UIView,UITableViewDataSource,UITableViewDelegate {
     /// Delegate of menu
     weak var delegate:MenuDelegate?
     
+    private var cellBackgroundColor: UIColor?
+    private var textColor: UIColor?
+    
     private var selectedItem = IndexPath(row: 0, section: 0)
     /// Menu's current state
     ///
@@ -58,8 +61,10 @@ class Menu:UIView,UITableViewDataSource,UITableViewDelegate {
     /// - Parameters:
     ///   - viewController: A viewController to add menu to it's navigation bar.
     ///   - items: Items of menu
-    init(viewController:UIViewController,items:[menuItem]){
+    init(viewController:UIViewController,items:[menuItem],backgroundColor:UIColor?=UIColor.white,textColor:UIColor?=UIColor.black){
         _viewController = viewController
+        cellBackgroundColor = backgroundColor
+        self.textColor = textColor
 //        _frame = CGRect(x: _viewController.view.frame.width-_viewController.view.frame.width, y: 50, width: UIScreen.main.bounds.width, height: CGFloat(items.count*90))
         _frame = CGRect(x: 0, y: 0, width: _viewController.view.frame.width, height: _viewController.view.frame.height)
         super.init(frame: _frame)
@@ -86,8 +91,7 @@ class Menu:UIView,UITableViewDataSource,UITableViewDelegate {
     
     /// This function configure menu
     private func configs(){
-        self.backgroundColor = UIColor.white
-        
+        self.backgroundColor = cellBackgroundColor
         configTable()
     }
     
@@ -96,6 +100,7 @@ class Menu:UIView,UITableViewDataSource,UITableViewDelegate {
         _table = UITableView(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: self.frame.height) , style: UITableView.Style.plain)
         _table.delegate = self
         _table.dataSource = self
+        _table.backgroundColor = cellBackgroundColor
         self.addSubview(_table)
         let topBarHeight = UIApplication.shared.statusBarFrame.size.height +
             (_viewController.navigationController?.navigationBar.frame.height ?? 0.0)
@@ -159,6 +164,7 @@ class Menu:UIView,UITableViewDataSource,UITableViewDelegate {
     /// - Returns: UITableViewCell
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = _table.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! MenuCell
+        cell.contentView.backgroundColor = cellBackgroundColor
         if selectedItem == indexPath {
             cell.selectedIcon.isHidden = false
         }
@@ -167,8 +173,10 @@ class Menu:UIView,UITableViewDataSource,UITableViewDelegate {
         }
         cell.selectionStyle = .none
         cell.cellTitle.text = _items[indexPath.row].title
+        cell.cellTitle.textColor = textColor
 //        cell.cellLabel.font = UIFont(name: Fonts.mainFont, size: 15)
         cell.cellDescription.text = _items[indexPath.row].description
+        cell.cellDescription.textColor = textColor
         cell.cellImage.image = _items[indexPath.row].image
         
         return cell

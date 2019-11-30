@@ -204,6 +204,48 @@ open class OpalImagePickerController: UINavigationController {
         }
     }
     
+    open var navigationColor:UIColor? {
+        didSet {
+            let rootVC = viewControllers.first as? OpalImagePickerRootViewController
+            rootVC?.navigationColor = navigationColor
+        }
+    }
+    
+    open var backgroundColor:UIColor? {
+        didSet {
+            let rootVC = viewControllers.first as? OpalImagePickerRootViewController
+            rootVC?.backgroundColor = backgroundColor
+        }
+    }
+    
+    open var titleColor:UIColor? {
+        didSet {
+            let rootVC = viewControllers.first as? OpalImagePickerRootViewController
+            rootVC?.titleColor = titleColor
+        }
+    }
+    
+    open var navigatioButtonColor:UIColor? {
+        didSet {
+            let rootVC = viewControllers.first as? OpalImagePickerRootViewController
+            rootVC?.navigatioButtonColor = navigatioButtonColor
+        }
+    }
+    
+    open var doneButtonText:String? {
+        didSet {
+            let rootVC = viewControllers.first as? OpalImagePickerRootViewController
+            rootVC?.doneButtonText = doneButtonText
+        }
+    }
+    
+    open var cancelButtonText:String? {
+        didSet {
+            let rootVC = viewControllers.first as? OpalImagePickerRootViewController
+            rootVC?.cancelButtonText = cancelButtonText
+        }
+    }
+    
     /// Initializer
     public required init() {
         super.init(rootViewController: OpalImagePickerRootViewController())

@@ -60,6 +60,51 @@ class OpalImageViewPicker: UIView,OpalImagePickerControllerDelegate{
         }
     }
     
+    /// Navigation background color
+    var navigationColor:UIColor? = UIColor.white {
+        didSet{
+            initializer()
+        }
+    }
+    
+    /// View background color
+    @IBInspectable var _viewBackgroundColor: UIColor? {
+        get {
+          return UIColor(cgColor: self.layer.borderColor!)
+        }set {
+          self.imagePicker.backgroundColor = newValue
+        }
+    }
+    var viewBackgroundColor:UIColor? = UIColor.white {
+        didSet{
+            initializer()
+        }
+    }
+    
+    var titleColor:UIColor? = UIColor.black {
+        didSet{
+            initializer()
+        }
+    }
+    
+    var navigationButtonColor:UIColor? = UIColor.blue {
+        didSet{
+            initializer()
+        }
+    }
+    
+    var doneButtonTitle:String? = "Done" {
+        didSet{
+            initializer()
+        }
+    }
+    
+    var cancelButtonTitle:String? = "Cancel" {
+        didSet{
+            initializer()
+        }
+    }
+    
     private var root:OpalImagePickerRootViewController!
     
     private let imagePicker = OpalImagePickerController()
@@ -89,14 +134,13 @@ class OpalImageViewPicker: UIView,OpalImagePickerControllerDelegate{
         imagePicker.viewControllers[0].didMove(toParent: parent!)
         
     }
-    func openModally(imagePicker:OpalImagePickerController, isExternal:Bool = false, items:[UIImage]?) {
+    func openModally(imagePicker:OpalImagePickerController, isExternal:Bool = false, items:[UIImage]?, externalTitle:String = "External") {
         imagePicker.imagePickerDelegate = self
-        imagePicker.selectionImage = selectionImage
-        imagePicker.doubleSelectionImage = doubleSelectionImage
         configurations(imagePicker: imagePicker)
         
         imagePicker.isExternal = isExternal
         imagePicker.externalItems = items
+        imagePicker.externalTitle = externalTitle
         parentViewController?.present(imagePicker, animated: true, completion: nil)
     }
     
@@ -109,6 +153,13 @@ class OpalImageViewPicker: UIView,OpalImagePickerControllerDelegate{
         imagePicker.doubleSelectionImage = doubleSelectionImage
         root.cacheCountLimit = cacheCountLimit
         root.totalCacheLimit = totalCacheLimit
+        imagePicker.doneButtonText = doneButtonTitle
+        imagePicker.cancelButtonText = cancelButtonTitle
+        imagePicker.backgroundColor = viewBackgroundColor
+        imagePicker.navigationColor = navigationColor
+        imagePicker.titleColor = titleColor
+        imagePicker.navigatioButtonColor = navigationButtonColor
+        
     }
     
     // MARK: Constraints

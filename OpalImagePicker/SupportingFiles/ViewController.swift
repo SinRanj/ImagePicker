@@ -19,15 +19,21 @@ class ViewController: UIViewController,OpalImagePickerControllerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         pickerView.delegate = self
-        
         let doneButton = UIBarButtonItem(title: "Select", style: .done, target: self, action: #selector(selectionTapped))
         navigationItem.rightBarButtonItem = doneButton
     }
     
     @objc func selectionTapped(){
         let imagePicker = OpalImagePickerController()
+        pickerView.doneButtonTitle = "Done"
+        pickerView.cancelButtonTitle = "Cancel"
+        pickerView.navigationColor = UIColor.black
+        pickerView.viewBackgroundColor = UIColor.black
+        pickerView.titleColor = UIColor.white
+        pickerView.navigationButtonColor = UIColor.white
+        
         let items = [UIImage(named: "slide_up")!,UIImage(named: "double_slide_up")!]
-        pickerView.openModally(imagePicker: imagePicker, isExternal: false`, items: items)
+        pickerView.openModally(imagePicker: imagePicker, isExternal: false, items: nil, externalTitle: "External")
     }
     
     override func didReceiveMemoryWarning() {
