@@ -209,14 +209,17 @@ class OpalImageViewPicker: UIView,OpalImagePickerControllerDelegate{
         imagePicker.viewControllers[0].didMove(toParent: parent!)
         
     }
-    func openModally(imagePicker:OpalImagePickerController, isExternal:Bool = false, items:[UIImage]?, externalTitle:String = "External") {
+    func openModally(imagePicker:OpalImagePickerController, isExternal:Bool = false, items:[UIImage]?, externalTitle:String = "External", modalPresentationStyle:UIModalPresentationStyle = UIModalPresentationStyle.fullScreen) {
+        
         imagePicker.imagePickerDelegate = self
         configurations(imagePicker: imagePicker)
         
         imagePicker.isExternal = isExternal
         imagePicker.externalItems = items
         imagePicker.externalTitle = externalTitle
+        imagePicker.modalPresentationStyle = modalPresentationStyle
         parentViewController?.present(imagePicker, animated: true, completion: nil)
+        
     }
     
     // MARK: Configurations
