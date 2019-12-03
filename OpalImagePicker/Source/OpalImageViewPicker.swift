@@ -161,6 +161,22 @@ class OpalImageViewPicker: UIView,OpalImagePickerControllerDelegate{
         }
     }
     
+    var isExternal:Bool! = false {
+        didSet{
+            initializer()
+        }
+    }
+    var externalItems:[UIImage]?  {
+        didSet {
+            initializer()
+        }
+    }
+    var externalTitle:String? = "External"  {
+        didSet {
+            initializer()
+        }
+    }
+    
     private var root:OpalImagePickerRootViewController!
     
     private let imagePicker = OpalImagePickerController()
@@ -186,6 +202,9 @@ class OpalImageViewPicker: UIView,OpalImagePickerControllerDelegate{
         
         constraintBuilder(imagePickerView: imagePickerView!)
         configurations(imagePicker: self.imagePicker)
+        imagePicker.isExternal = isExternal
+        imagePicker.externalItems = externalItems
+        imagePicker.externalTitle = externalTitle
         
         imagePicker.viewControllers[0].didMove(toParent: parent!)
         

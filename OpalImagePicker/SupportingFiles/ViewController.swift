@@ -25,6 +25,9 @@ class ViewController: UIViewController,OpalImagePickerControllerDelegate {
         pickerView.viewBackgroundColor = UIColor.black
         pickerView.titleColor = UIColor.white
         pickerView.navigationButtonColor = UIColor.white
+        pickerView.isExternal = true
+        let items = [UIImage(named: "slide_up")!,UIImage(named: "double_slide_up")!]
+        pickerView.externalItems = items
         let doneButton = UIBarButtonItem(title: "Select", style: .done, target: self, action: #selector(selectionTapped))
         navigationItem.rightBarButtonItem = doneButton
     }
@@ -46,7 +49,7 @@ class ViewController: UIViewController,OpalImagePickerControllerDelegate {
     
     
     func imagePicker(_ picker: OpalImagePickerController, didFinishPickingExternalImages images: [UIImage]) {
-        
+        print("")
     }
     func imagePicker(_ picker: OpalImagePickerController, didFinishPickingImages images: [UIImage]) {
         switch images.count {
